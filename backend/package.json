@@ -1,0 +1,27 @@
+{
+  "name": "multiplayer-chess",
+  "version": "1.0.0",
+  "description": "Multiplayer chess game using React as a front end and Node, Express, SocketIO, MongoDB in the backend",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --inspect server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alextasy/Multiplayer-Chess.git"
+  },
+  "author": "Aleksandar Stoyanov (alextasy)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alextasy/Multiplayer-Chess/issues"
+  },
+  "homepage": "https://github.com/alextasy/Multiplayer-Chess#readme",
+  "type": "module",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
