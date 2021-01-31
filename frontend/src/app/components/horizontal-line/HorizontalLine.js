@@ -1,8 +1,8 @@
 import React from 'react';
 import './HorizontalLine.scss';
 
-function HorizontalLine(props) {
-    return <div className='HorizontalLine' style={{width: props.width}}></div>
+function HorizontalLine({ width }) {
+    return <div className='HorizontalLine' style={{width: width}}></div>
 }
 
 export default HorizontalLine;
