@@ -1,11 +1,17 @@
 // VARIABLES:
 
-
+$background: #312e2b;
+$backgroundDark: #272522;
+$highlight: #44413f;
+$main: #7fa650;
+$mainShadow: #537133;
+$font: #ebebeb;
 
 // MIXINS:
 
-@mixin flex-center {
+@mixin flex-center ($direction) {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: $direction;
 }
