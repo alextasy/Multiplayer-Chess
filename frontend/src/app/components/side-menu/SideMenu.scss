@@ -1,0 +1,44 @@
+@import '../../../global';
+
+.SideMenu{
+    width: 320px;
+    height: 100%;
+    background-color: $backgroundDark;
+    color: $text;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    img{
+        margin: 25px;
+    }
+
+    h3{
+        font-size: 16px;
+        font-weight: normal;
+        color: $primary;
+        margin: 25px;
+    }
+
+    .Button + .HorizontalLine{
+        margin-top: 25px;
+    }
+
+    .Button + .Button{
+        margin-top: 20px;
+    }
+
+    p{
+        margin-top: 5px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .quote{
+        margin-top: 0;
+        position: absolute;
+        bottom: 10px;
+        color: $highlight;
+        cursor: initial;
+    }
+}
