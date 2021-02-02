@@ -11,4 +11,7 @@
         height: 62.5px;
         @include flex-center(row);
     }
+        img{
+            width: 90%;
+        }
 }
