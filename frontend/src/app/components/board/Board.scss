@@ -1,0 +1,14 @@
+@import '../../../global';
+
+.Board{
+    width: 500px;
+    height: 500px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+
+    .square{
+        width: 62.5px;
+        height: 62.5px;
+        @include flex-center(row);
+    }
+}
