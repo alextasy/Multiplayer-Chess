@@ -22,13 +22,13 @@ function Board() {
     const [gameBoardState, setGameBoardState] = useState(initialSetUp());
 
     const gameBoard = gameBoardState.map(square => (
-        <div className='square' style={{backgroundColor: square.color}} key={square.position}>
-            {square.occupiedBy ? <img src={square.occupiedBy.img.src} alt={square.occupiedBy.img.alt}></img> : null}
+        <div className='square' style={{ backgroundColor: square.color }} key={ square.position }>
+            { square.occupiedBy ? <img src={ square.occupiedBy.img.src } alt={ square.occupiedBy.img.alt }></img> : null}
         </div>));
 
     return (
         <div className='Board'>
-            {gameBoard}
+            { gameBoard }
         </div>
     )
 }

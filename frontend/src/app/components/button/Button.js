@@ -1,7 +1,7 @@
 import React from 'react'
 import './Button.scss';
 
-function Button({color, children, click}) {
+function Button({ color, children, click }) {
     let border = null;
     const bgColor = color ? applyColor() : null;
 
@@ -15,8 +15,8 @@ function Button({color, children, click}) {
     }
 
     return (
-        <div className='Button' style={{backgroundColor: bgColor, borderBottom: border}} onClick={click}>
-            {children}
+        <div className='Button' style={{ backgroundColor: bgColor, borderBottom: border }} onClick={ click }>
+            { children }
         </div>
     )
 }

@@ -8,7 +8,7 @@ import { withRouter } from 'react-router-dom';
 function SideMenu({ history }) {
     return (
         <div className='SideMenu'>
-            <img src={logo} alt='logo'/>
+            <img src={ logo } alt='logo'/>
             <HorizontalLine />
             <h3>PLAY AS GUEST</h3>
             <Button click={()=> history.push('/local')}>LOCAL MULTIPLAYER</Button>
