@@ -10,4 +10,35 @@
     font-weight: bold;
     font-size: 18px;
     cursor: pointer;
+
+    &:hover{
+        background-color: lighten( $background, 10%);
+    }
+
+    &.primary{
+        background-color: $primary;
+        border-bottom: 2px solid $primaryDark;
+
+        &:hover{
+            background-color: lighten( $primary, 10%);
+        }
+    }
+
+    &.backgroundDark{
+        background-color: $backgroundDark;
+
+        &:hover{
+            background-color: lighten( $backgroundDark, 10%);
+        }
+    }
+
+    &.highlight{
+        background-color: $highlight;
+
+        &:hover{
+            background-color: lighten( $highlight, 10%);
+        }
+    }
+
+
 }
