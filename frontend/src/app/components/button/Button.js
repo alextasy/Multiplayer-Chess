@@ -9,6 +9,7 @@ function Button({ color, children, click }) {
         switch(color){
             case 'primary': border = '2px solid #537133';return '#7fa650';
             case 'backgroundDark': return '#272522';
+            case 'highlight': return '#44413f';
             //returns background color by default
             default: return '#312e2b';
         };
