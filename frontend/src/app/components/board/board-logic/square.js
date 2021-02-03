@@ -16,7 +16,7 @@ export default class Square {
     constructor(position, color) {
         this.position = position;
         this.color = color;
-        this.isOccupiedBy = null;
+        this.occupiedBy = null;
         this.intialSetUp(position);
     }
 
