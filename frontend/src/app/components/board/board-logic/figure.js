@@ -11,8 +11,10 @@ export default class Figure {
 
     getAvailableMoves(board) {
         switch (this.type) {
+            case 'pawn': return this.getPawnMoves(board);
+            case 'knight': return this.getKnightMoves(board);
             case 'rook': return [...this.getHorizontalMoves(board), ...this.getVerticalMoves(board)];
-            case 'bishop': return [...this.getDiagonalMoves];
+            case 'bishop': return this.getDiagonalMoves(board);
             default:
                 return [
                     ...this.invokeGetDiagonalMoves(board),
@@ -68,12 +70,11 @@ export default class Figure {
                 returnCondition = this.leftBorder.includes(this.position);
                 break;
             }
-            case 'bottom-right': {
+            default: {
                 differnce = 9;
                 this.rightBorder.includes(this.position);
                 break;
             }
-            default: throw new Error ('No such direction');
         }
         // If figure is on the border it shouldn't go in the direction of said border
         if (returnCondition) return [];
@@ -95,6 +96,46 @@ export default class Figure {
             if (goingSideways && (this.leftBorder.includes(nextPosition) || this.rightBorder.includes(nextPosition))) break;
             nextPosition += differnce;
         }
+        return moves;
+    }
+
+    getPawnMoves(board, pos = this.position, moves = []) {
+        const nextPositionFwd = pos + (this.color === 'black' ? 8 : -8);
+        const nextPositionLeft = this.position + (this.color === 'black' ? 9 : -9);
+        const nextPositionRight = this.position + (this.color === 'black' ? 7 : -7);
+        const enemyIsOnLeftSquare = (board[nextPositionLeft - 1].occupiedBy && board[nextPositionLeft - 1].occupiedBy.color !== this.color);
+        const enemyIsOnRightSquare = (board[nextPositionRight - 1].occupiedBy && board[nextPositionRight - 1].occupiedBy.color !== this.color);
+
+        if (enemyIsOnLeftSquare && !this.hasMoved) moves.push(nextPositionLeft);
+        if (enemyIsOnRightSquare && !this.hasMoved) moves.push(nextPositionRight);
+        if (!board[nextPositionFwd - 1].occupiedBy) moves.push(nextPositionFwd);
+        if (!this.hasMoved) {
+            this.hasMoved = true;
+            this.getPawnMoves(board, nextPositionFwd, moves);
+        }
+        return moves;
+    }
+
+    getKnightMoves(board) {
+        const secondCol = [2, 10, 18, 26, 34, 42, 50, 58];
+        const seventhCol = [7, 15, 23, 31, 39, 47, 55, 63];
+        const moves = [];
+        const nextPositionDiff = [17, 15, 6, 10, -17, -15, -6, -10];
+
+        nextPositionDiff.forEach(difference => {
+            let shouldAdd = true;
+            // Prevents from jumping to the other side of the board
+            // If the figure is on the left border && it's not going right, the position shoudn't be added. Same for rest.
+            if (this.leftBorder.includes(this.position) && [15, 6, -10, -17].includes(difference)) shouldAdd = false;
+            if (this.rightBorder.includes(this.position) && [-15, -6, 10, 17].includes(difference)) shouldAdd = false;
+            if (secondCol.includes(this.position) && [6, -10].includes(difference)) shouldAdd = false;
+            if (seventhCol.includes(this.position) && [-6, 10].includes(difference)) shouldAdd = false;
+
+            const nextPosition = this.position + difference;
+            const withinBoard = (nextPosition > 0 && nextPosition < 65);
+            const notOccupiedByAlly = withinBoard ? board[nextPosition -1].occupiedBy?.color !== this.color : false;
+            if (withinBoard && notOccupiedByAlly && shouldAdd) moves.push(nextPosition);
+        });
         return moves;
     }
 
