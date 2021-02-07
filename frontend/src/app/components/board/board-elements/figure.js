@@ -101,13 +101,13 @@ export default class Figure {
 
     getPawnMoves(board) {
         const moves = [];
-        const isBlack = this.color === 'black'
+        const isBlack = this.color === 'black';
         const nextPosFwd = this.position + (isBlack ? 8 : -8);
         const secondPosFwd = this.position + (isBlack ? 16 : -16);
         const nextPosLeft = this.position + (isBlack ? 9 : -9);
         const nextPosRight = this.position + (isBlack ? 7 : -7);
-        const enemyIsOnLeftSquare = (board[nextPosLeft - 1].occupiedBy && board[nextPosLeft - 1].occupiedBy.color !== this.color);
-        const enemyIsOnRightSquare = (board[nextPosRight - 1].occupiedBy && board[nextPosRight - 1].occupiedBy.color !== this.color);
+        const enemyIsOnLeftSquare = (board[nextPosLeft - 1]?.occupiedBy && board[nextPosLeft - 1].occupiedBy.color !== this.color);
+        const enemyIsOnRightSquare = (board[nextPosRight - 1]?.occupiedBy && board[nextPosRight - 1].occupiedBy.color !== this.color);
         const hasNotMoved = isBlack ? [9, 10, 11, 12, 13, 14 , 15, 16].includes(this.position)
                                  : [49, 50, 51, 52, 53, 54 , 55, 56].includes(this.position);
 
