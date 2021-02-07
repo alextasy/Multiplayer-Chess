@@ -3,7 +3,6 @@ export default class Figure {
         this.color = color;
         this.type = type;
         this.img = img;
-        this.hasMoved = false;
         this.position = position;
     }
     leftBorder = [1, 9, 17, 25, 33, 41, 49, 57];
@@ -99,20 +98,24 @@ export default class Figure {
         return moves;
     }
 
-    getPawnMoves(board, pos = this.position, moves = []) {
-        const nextPositionFwd = pos + (this.color === 'black' ? 8 : -8);
-        const nextPositionLeft = this.position + (this.color === 'black' ? 9 : -9);
-        const nextPositionRight = this.position + (this.color === 'black' ? 7 : -7);
-        const enemyIsOnLeftSquare = (board[nextPositionLeft - 1].occupiedBy && board[nextPositionLeft - 1].occupiedBy.color !== this.color);
-        const enemyIsOnRightSquare = (board[nextPositionRight - 1].occupiedBy && board[nextPositionRight - 1].occupiedBy.color !== this.color);
+    getPawnMoves(board) {
+        const moves = [];
+        const isBlack = this.color === 'black'
+        const nextPosFwd = this.position + (isBlack ? 8 : -8);
+        const secondPosFwd = this.position + (isBlack ? 16 : -16);
+        const nextPosLeft = this.position + (isBlack ? 9 : -9);
+        const nextPosRight = this.position + (isBlack ? 7 : -7);
+        const enemyIsOnLeftSquare = (board[nextPosLeft - 1].occupiedBy && board[nextPosLeft - 1].occupiedBy.color !== this.color);
+        const enemyIsOnRightSquare = (board[nextPosRight - 1].occupiedBy && board[nextPosRight - 1].occupiedBy.color !== this.color);
+        const hasNotMoved = isBlack ? [9, 10, 11, 12, 13, 14 , 15, 16].includes(this.position)
+                                 : [49, 50, 51, 52, 53, 54 , 55, 56].includes(this.position);
 
-        if (enemyIsOnLeftSquare && !this.hasMoved) moves.push(nextPositionLeft);
-        if (enemyIsOnRightSquare && !this.hasMoved) moves.push(nextPositionRight);
-        if (!board[nextPositionFwd - 1].occupiedBy) moves.push(nextPositionFwd);
-        if (!this.hasMoved) {
-            this.hasMoved = true;
-            this.getPawnMoves(board, nextPositionFwd, moves);
-        }
+        if (enemyIsOnLeftSquare && !this.hasMoved) moves.push(nextPosLeft);
+        if (enemyIsOnRightSquare && !this.hasMoved) moves.push(nextPosRight);
+        if (!board[nextPosFwd - 1].occupiedBy) moves.push(nextPosFwd);
+        if (hasNotMoved && !board[secondPosFwd - 1].occupiedBy) moves.push(secondPosFwd);
+
+
         return moves;
     }
 
