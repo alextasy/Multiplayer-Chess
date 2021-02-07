@@ -13,7 +13,7 @@ export default class Figure {
             case 'pawn': return this.getPawnMoves(board);
             case 'knight': return this.getKnightMoves(board);
             case 'rook': return [...this.getHorizontalMoves(board), ...this.getVerticalMoves(board)];
-            case 'bishop': return this.getDiagonalMoves(board);
+            case 'bishop': return this.invokeGetDiagonalMoves(board);
             default:
                 return [
                     ...this.invokeGetDiagonalMoves(board),
@@ -61,7 +61,7 @@ export default class Figure {
             }
             case 'top-right': {
                 differnce = -7;
-                this.rightBorder.includes(this.position);
+                returnCondition = this.rightBorder.includes(this.position);
                 break;
             }
             case 'bottom-left': {
@@ -69,11 +69,12 @@ export default class Figure {
                 returnCondition = this.leftBorder.includes(this.position);
                 break;
             }
-            default: {
+            case 'bottom-right': {
                 differnce = 9;
-                this.rightBorder.includes(this.position);
+                returnCondition = this.rightBorder.includes(this.position);
                 break;
             }
+            default: return;
         }
         // If figure is on the border it shouldn't go in the direction of said border
         if (returnCondition) return [];
