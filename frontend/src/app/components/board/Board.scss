@@ -22,7 +22,7 @@
             width: 35%;
             height: 35%;
             border-radius: 50%;
-            background-color: $positions;
+            background-color: $available-positions;
         }
 
         &.potential-move-take::after{
