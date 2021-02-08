@@ -7,6 +7,10 @@ $primary: #7fa650;
 $primaryDark: #537133;
 $text: #ebebeb;
 
+$selected: #aebe1b;
+$available-positions: #0000002d;
+$available-takes: #6400002d;
+
 // MIXINS:
 
 @mixin flex-center ($direction) {
