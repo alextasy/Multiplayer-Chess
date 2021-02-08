@@ -5,13 +5,38 @@
     height: 500px;
     display: grid;
     grid-template-columns: repeat(8, 1fr);
+    user-select: none;
 
     .square{
         width: 62.5px;
         height: 62.5px;
+        position: relative;
         @include flex-center(row);
-    }
+
+        &.selected{
+            background-color: $selected !important;
+        }
+
+        &.potential-move::after{
+            content: '';
+            width: 35%;
+            height: 35%;
+            border-radius: 50%;
+            background-color: $positions;
+        }
+
+        &.potential-move-take::after{
+            content: '';
+            width: 75%;
+            height: 75%;
+            border-radius: 50%;
+            background-color: transparent;
+            border: 5px solid $available-takes;
+            position: absolute;
+        }
+
         img{
             width: 90%;
         }
+    }
 }
