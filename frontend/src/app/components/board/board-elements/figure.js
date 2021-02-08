@@ -30,16 +30,14 @@ export default class Figure {
         ];
     }
 
-    //Function will play twice and for each direction, by calling itself
-    getHorizontalMoves(board, leftMoves = false, moves = []) {
-        const difference = leftMoves ? - 1 : 1;
-        // If figure is on the border it shouldn't go in the direction of said border
-        if (this.rightBorder.includes(this.position) && !leftMoves) return moves;
-        if (this.leftBorder.includes(this.position) && leftMoves) return moves;
+    getHorizontalMoves(board) {
+        let rightMoves = this.getAvailableSquares(board, 1, true);
+        let leftMoves = this.getAvailableSquares(board, -1, true);
 
-        moves = [...moves, ...this.getAvailableSquares(board, difference, true)];
-        if (leftMoves) return moves;
-        return this.getHorizontalMoves(board, true, moves);
+        // If figure is on the border it shouldn't go in the direction of said border
+        if (this.rightBorder.includes(this.position)) rightMoves = [];
+        if (this.leftBorder.includes(this.position) ) leftMoves = [];
+        return [...rightMoves, ...leftMoves];
     }
 
     invokeGetDiagonalMoves(board) {
