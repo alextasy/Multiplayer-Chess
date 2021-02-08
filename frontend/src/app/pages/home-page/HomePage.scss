@@ -1,69 +1,61 @@
 @import '../../../global';
 
 .HomePage{
-    background-color: $background;
-    width: 100%;
-    height: 100vh;
-    display: flex;
+    @include flex-center(row);
+    justify-content: space-evenly;
+    height: calc(100vh - 100px);
 
-    .container{
-        width: calc(100% - 320px);
-        @include flex-center(row);
-        justify-content: space-evenly;
-        height: calc(100vh - 100px);
+    .hero-section{
+        width: 455px;
 
-        .hero-section{
-            width: 455px;
+        h1{
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
 
-            h1{
-                font-size: 48px;
-                margin-bottom: 20px;
-            }
+        h2{
+            font-size: 22px;
+            font-weight: normal;
+            text-align: center;
+            margin-bottom: 40px;
+        }
 
-            h2{
-                font-size: 22px;
-                font-weight: normal;
-                text-align: center;
-                margin-bottom: 40px;
-            }
+        p{
+            font-size: 18px;
+            line-height: 27px;
+            margin-bottom: 20px;
 
-            p{
-                font-size: 18px;
-                line-height: 27px;
-                margin-bottom: 20px;
-
-                b{
-                    color: $primary;
-                    cursor: pointer;
-                }
-            }
-
-            p + p{
-                margin-bottom: 40px;
-            }
-
-            div{
-                display: flex;
-
-                &:first-child.Button{
-                    margin-right: 20px;
-                    width: 150px;
-                }
-
-                .Button{
-                    height: 42px;
-                }
+            b{
+                color: $primary;
+                cursor: pointer;
             }
         }
 
-        .Board{
-            box-sizing: initial;
-            border: 6px solid $highlight;
+        p + p{
+            margin-bottom: 40px;
         }
 
-        .HorizontalLine{
-            position: absolute;
-            bottom: 100px;
+        div{
+            display: flex;
+
+            &:first-child.Button{
+                margin-right: 20px;
+                width: 150px;
+            }
+
+            .Button{
+                height: 42px;
+            }
         }
+    }
+
+    .Board{
+        box-sizing: initial;
+        border: 6px solid $highlight;
+    }
+
+    .HorizontalLine{
+        position: absolute;
+        bottom: 100px;
     }
 }
