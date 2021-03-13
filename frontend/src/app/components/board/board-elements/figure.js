@@ -1,3 +1,4 @@
+import { firstCol, eighthCol, secondCol, seventhCol } from '../boardHelper';
 export default class Figure {
     constructor (color, type, img, position) {
         this.color = color;
@@ -5,8 +6,6 @@ export default class Figure {
         this.img = img;
         this.position = position;
     }
-    leftBorder = [1, 9, 17, 25, 33, 41, 49, 57];
-    rightBorder = [8, 16, 24, 32, 40, 48, 56, 64];
 
     getAvailableMoves(board) {
         switch (this.type) {
@@ -35,8 +34,8 @@ export default class Figure {
         let leftMoves = this.getAvailableSquares(board, -1, true);
 
         // If figure is on the border it shouldn't go in the direction of said border
-        if (this.rightBorder.includes(this.position)) rightMoves = [];
-        if (this.leftBorder.includes(this.position) ) leftMoves = [];
+        if (eighthCol.includes(this.position)) rightMoves = [];
+        if (firstCol.includes(this.position) ) leftMoves = [];
         return [...rightMoves, ...leftMoves];
     }
 
@@ -54,22 +53,22 @@ export default class Figure {
         switch (direction) {
             case 'top-left': {
                 differnce = -9;
-                returnCondition = this.leftBorder.includes(this.position);
+                returnCondition = firstCol.includes(this.position);
                 break;
             }
             case 'top-right': {
                 differnce = -7;
-                returnCondition = this.rightBorder.includes(this.position);
+                returnCondition = eighthCol.includes(this.position);
                 break;
             }
             case 'bottom-left': {
                 differnce = 7;
-                returnCondition = this.leftBorder.includes(this.position);
+                returnCondition = firstCol.includes(this.position);
                 break;
             }
             case 'bottom-right': {
                 differnce = 9;
-                returnCondition = this.rightBorder.includes(this.position);
+                returnCondition = eighthCol.includes(this.position);
                 break;
             }
             default: return;
@@ -91,7 +90,7 @@ export default class Figure {
             // King can move only one square and if there is an occupied squre we should not continue
             if (this.type === 'king' || enemyIsOnSquare) break;
             // Prevents from jumping to next row
-            if (goingSideways && (this.leftBorder.includes(nextPosition) || this.rightBorder.includes(nextPosition))) break;
+            if (goingSideways && (firstCol.includes(nextPosition) || eighthCol.includes(nextPosition))) break;
             nextPosition += differnce;
         }
         return moves;
@@ -119,8 +118,6 @@ export default class Figure {
     }
 
     getKnightMoves(board) {
-        const secondCol = [2, 10, 18, 26, 34, 42, 50, 58];
-        const seventhCol = [7, 15, 23, 31, 39, 47, 55, 63];
         const moves = [];
         const nextPositionDiff = [17, 15, 6, 10, -17, -15, -6, -10];
 
@@ -128,8 +125,8 @@ export default class Figure {
             let shouldAdd = true;
             // Prevents from jumping to the other side of the board
             // If the figure is on the left border && it's not going right, the position shoudn't be added. Same for rest.
-            if (this.leftBorder.includes(this.position) && [15, 6, -10, -17].includes(difference)) shouldAdd = false;
-            if (this.rightBorder.includes(this.position) && [-15, -6, 10, 17].includes(difference)) shouldAdd = false;
+            if (firstCol.includes(this.position) && [15, 6, -10, -17].includes(difference)) shouldAdd = false;
+            if (eighthCol.includes(this.position) && [-15, -6, 10, 17].includes(difference)) shouldAdd = false;
             if (secondCol.includes(this.position) && [6, -10].includes(difference)) shouldAdd = false;
             if (seventhCol.includes(this.position) && [-6, 10].includes(difference)) shouldAdd = false;
 

@@ -1,30 +1,20 @@
-import React, { useState } from 'react';
-import Square from './board-elements/square';
+import React, { useRef, useState } from 'react';
 import './Board.scss';
+import { withRouter } from 'react-router-dom';
+import { initialSetUp, setFigures } from './boardHelper';
 
-function initialSetUp() {
-    const arr = [];
-    let colorShouldInverse = false;
-
-    for (let i = 1; i <= 64; i++) {
-        const square = new Square(i, i % 2 === Number(colorShouldInverse) ? '#537133' : '#ebebeb');
-        arr.push(square);
-        if (i % 8 === 0) colorShouldInverse = !colorShouldInverse;
-    }
-    return arr;
-}
-
-function Board({ playerIsBlack, isMyTurn = true, playable = true }) {
+function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
     const [gameBoard, setGameBoard] = useState(initialSetUp());
     const [selectedFigure, setSelectedFigure] = useState(null);
     const [currentTurn, setCurrentTurn] = useState('white');
     const [gameIsOver, setGameIsOver] = useState(null);
     const [availableMoves, setAvailableMoves] = useState (null);
+    const isLocal = useRef(location.pathname === '/local');
+    const [blackFigures, setBlackFigures] = useState(setFigures('black'));
+    const [whiteFigures, setWhiteFigures] = useState(setFigures('white'));
 
     function selectFigure(square) {
         if (square.occupiedBy?.color !== currentTurn || !isMyTurn) return;
-        console.log(square);
-
         toggleSelectedStyles(square.occupiedBy);
         setSelectedFigure(square.occupiedBy);
         setAvailableMoves(square.occupiedBy.getAvailableMoves(gameBoard));
@@ -43,12 +33,18 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true }) {
             return;
         }
         const gameBoardCopy = [...gameBoard];
+        if (square.occupiedBy) {
+           if (currentTurn === 'white') setBlackFigures(blackFigures.filter(figure => figure !== square.occupiedBy));
+           else setWhiteFigures(whiteFigures.filter(figure => figure !== square.occupiedBy));
+        }
         gameBoardCopy[selectedFigure.position -1].occupiedBy = null;
         selectedFigure.position = square.position;
         gameBoardCopy[square.position -1].occupiedBy = selectedFigure;
         setSelectedFigure(null);
         setAvailableMoves(null);
         setGameBoard(gameBoardCopy);
+        switchTurn();
+        console.log({blackFigures: blackFigures, whiteFigures: whiteFigures});
     }
 
     function toggleSelectedStyles(figure) {
@@ -61,11 +57,18 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true }) {
         });
     }
 
+    function switchTurn() {
+        if (isLocal) {
+            setCurrentTurn(currentTurn === 'white' ? 'black' : 'white');
+            return;
+        }
+    }
+
     const gameBoardElement = gameBoard.map(square => (
         <div
             className='square'
             style={{ backgroundColor: square.color }}
-            id= { square.position }
+            id={ square.position }
             key={ square.position }
             onClick={ () => {
                 if (!playable) return;
@@ -88,4 +91,4 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true }) {
     )
 }
 
-export default Board;
+export default withRouter(Board);
