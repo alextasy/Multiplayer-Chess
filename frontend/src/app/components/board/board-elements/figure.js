@@ -7,19 +7,12 @@ export default class Figure {
         this.position = position;
     }
 
-    getAvailableMoves(board) {
-        switch (this.type) {
-            case 'pawn': return this.getPawnMoves(board);
-            case 'knight': return this.getKnightMoves(board);
-            case 'rook': return [...this.getHorizontalMoves(board), ...this.getVerticalMoves(board)];
-            case 'bishop': return this.invokeGetDiagonalMoves(board);
-            default:
-                return [
-                    ...this.invokeGetDiagonalMoves(board),
-                    ...this.getVerticalMoves(board),
-                    ...this.getHorizontalMoves(board),
-                ];
-        }
+    getDefaultMoves(board) {
+        if (this.type === 'pawn') return this.getPawnMoves(board);
+        if (this.type === 'knight') return this.getKnightMoves(board);
+        if (this.type === 'rook') return [...this.getHorizontalMoves(board), ...this.getVerticalMoves(board)];
+        if (this.type === 'bishop') return this.invokeGetDiagonalMoves(board);
+        return [...this.invokeGetDiagonalMoves(board), ...this.getVerticalMoves(board), ...this.getHorizontalMoves(board)];
     }
 
     getVerticalMoves(board) {
