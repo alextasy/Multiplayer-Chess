@@ -11,6 +11,7 @@ import wKing from '../../../../assets/figure-images/w-king.png';
 import wQueen from '../../../../assets/figure-images/w-queen.png';
 import wRook from '../../../../assets/figure-images/w-rook.png';
 import Figure from './figure';
+import { firstCol, secondCol, thirdCol, fourthCol, fifthCol, sixthCol, seventhCol } from '../boardHelper';
 
 export default class Square {
     constructor(position, color) {
@@ -39,14 +40,14 @@ export default class Square {
     }
 
     getSquareLetter(p) {
-        if ([1, 9, 17, 25, 33, 41, 49, 57].includes(p)) return 'a';
-        if ([2, 10, 18, 26, 34, 42, 50, 58].includes(p)) return 'b';
-        if ([3, 11, 19, 27, 35, 43, 51, 59].includes(p)) return 'c';
-        if ([4, 12, 20, 28, 36, 44, 52, 60].includes(p)) return 'd';
-        if ([5, 13, 21, 29, 37, 45, 53, 61].includes(p)) return 'e';
-        if ([6, 14, 22, 30, 38, 46, 54, 62].includes(p)) return 'f';
-        if ([7, 15, 23, 31, 39, 47, 55, 63].includes(p)) return 'g';
-        if ([8, 16, 24, 32, 40, 48, 56, 64].includes(p)) return 'h';
+        if (firstCol.includes(p)) return 'a';
+        if (secondCol.includes(p)) return 'b';
+        if (thirdCol.includes(p)) return 'c';
+        if (fourthCol.includes(p)) return 'd';
+        if (fifthCol.includes(p)) return 'e';
+        if (sixthCol.includes(p)) return 'f';
+        if (seventhCol.includes(p)) return 'g';
+        return 'h';
     }
 
     getSquareNumber(p) {
