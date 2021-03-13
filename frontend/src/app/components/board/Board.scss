@@ -1,23 +1,27 @@
 @import '../../../global';
 
-.Board{
+.Board {
     width: 500px;
     height: 500px;
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     user-select: none;
 
-    .square{
+    .square {
         width: 62.5px;
         height: 62.5px;
         position: relative;
         @include flex-center(row);
 
-        &.selected{
+        &.checked {
+            background-color: rgb(226, 117, 98) !important;
+        }
+
+        &.selected {
             background-color: $selected !important;
         }
 
-        &.potential-move::after{
+        &.potential-move::after {
             content: '';
             width: 35%;
             height: 35%;
@@ -25,7 +29,7 @@
             background-color: $available-positions;
         }
 
-        &.potential-move-take::after{
+        &.potential-move-take::after {
             content: '';
             width: 75%;
             height: 75%;
@@ -35,7 +39,7 @@
             position: absolute;
         }
 
-        img{
+        img {
             width: 90%;
         }
     }
