@@ -21,14 +21,11 @@ export default class Figure {
         return availablePositions;
     }
 
-    seeIfCheck(board, figure, shouldPaintOnCheck = false) {
+    seeIfCheck(board, figure) {
         const nextPositions = figure.getDefaultMoves(board);
         let check = false;
         nextPositions.forEach(position => {
-            if (board[position - 1].occupiedBy?.type === 'king') {
-                if (shouldPaintOnCheck) document.getElementById(position).classList.add('checked');
-                check = true;
-            }
+            if (board[position - 1].occupiedBy?.type === 'king') check = true;
         });
         return check;
     }
@@ -51,7 +48,6 @@ export default class Figure {
     getHorizontalMoves(board) {
         let rightMoves = this.getAvailableSquares(board, 1, true);
         let leftMoves = this.getAvailableSquares(board, -1, true);
-
         // If figure is on the border it shouldn't go in the direction of said border
         if (eighthCol.includes(this.position)) rightMoves = [];
         if (firstCol.includes(this.position) ) leftMoves = [];
@@ -99,8 +95,8 @@ export default class Figure {
         const enemyIsOnLeftSquare = (board[nextPosLeft - 1]?.occupiedBy && board[nextPosLeft - 1].occupiedBy.color !== this.color);
         const enemyIsOnRightSquare = (board[nextPosRight - 1]?.occupiedBy && board[nextPosRight - 1].occupiedBy.color !== this.color);
 
-        if (enemyIsOnLeftSquare && !this.hasMoved) moves.push(nextPosLeft);
-        if (enemyIsOnRightSquare && !this.hasMoved) moves.push(nextPosRight);
+        if (enemyIsOnLeftSquare) moves.push(nextPosLeft);
+        if (enemyIsOnRightSquare) moves.push(nextPosRight);
         if (!board[nextPosFwd - 1].occupiedBy) moves.push(nextPosFwd);
         if (!this.hasMoved && !board[secondPosFwd - 1].occupiedBy) moves.push(secondPosFwd);
 
@@ -122,7 +118,7 @@ export default class Figure {
 
             const nextPosition = this.position + difference;
             const withinBoard = (nextPosition > 0 && nextPosition < 65);
-            const notOccupiedByAlly = withinBoard ? board[nextPosition -1].occupiedBy?.color !== this.color : false;
+            const notOccupiedByAlly = board[nextPosition -1]?.occupiedBy?.color !== this.color;
             if (withinBoard && notOccupiedByAlly && shouldAdd) moves.push(nextPosition);
         });
         return moves;

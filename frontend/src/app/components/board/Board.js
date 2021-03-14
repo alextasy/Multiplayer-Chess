@@ -57,7 +57,10 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
         selectedFigure.position = square.position;
         selectedFigure.hasMoved = true;
         gameBoardCopy[square.position -1].occupiedBy = selectedFigure;
-        if (selectedFigure.seeIfCheck(gameBoardCopy, square.occupiedBy, true)) setCheckedPlayer(true);
+        if (selectedFigure.seeIfCheck(gameBoardCopy, square.occupiedBy)) {
+            document.getElementById(square.position).classList.add('checked');
+            setCheckedPlayer(true);
+        }
         setSelectedFigure(null);
         setAvailableMoves(null);
         setGameBoard(gameBoardCopy);
