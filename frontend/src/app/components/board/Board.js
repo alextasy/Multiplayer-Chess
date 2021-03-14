@@ -15,9 +15,10 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
 
     if (checkedPlayer) {
         let hasLegalMoves = false;
+        const enemyFigures = currentTurn === 'black' ? whiteFigures : blackFigures;
         const checkAllLegalMoves = figures => {
             figures.forEach(fig => {
-                if (getFigureLegalMoves(fig).length > 0) hasLegalMoves = true;
+                if (fig.getFigureLegalMoves(gameBoard, enemyFigures).length > 0) hasLegalMoves = true;
             });
         }
         if (currentTurn === 'black') checkAllLegalMoves(blackFigures);
@@ -26,28 +27,12 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
         else setCheckedPlayer(false);
     }
 
-    function getFigureLegalMoves(figure) {
-        let availablePositions = figure.getDefaultMoves(gameBoard);
-        availablePositions.forEach(potentialPositon => {
-            const boardCopy = [...gameBoard].map(square => Object.create(square)); //Get a deep copy
-            boardCopy[figure.position - 1].occupiedBy = null;
-            boardCopy[potentialPositon - 1].occupiedBy = figure;
-            const checkAllEnemyMoves = figures => {
-                figures.forEach(fig => {
-                    if (potentialPositon === fig.position) return; // Meaning we can take the attacking figure
-                    if (seeIfCheck(boardCopy, fig)) availablePositions = availablePositions.filter(position => position !== potentialPositon);
-                });
-            }
-            currentTurn === 'black' ? checkAllEnemyMoves(whiteFigures) : checkAllEnemyMoves(blackFigures);
-        });
-        return availablePositions;
-    }
-
     function selectFigure(square) {
+        const enemyFigures = currentTurn === 'black' ? whiteFigures : blackFigures;
         if (square.occupiedBy?.color !== currentTurn || !isMyTurn) return;
         toggleSelectedStyles(square.occupiedBy);
         setSelectedFigure(square.occupiedBy);
-        setAvailableMoves(getFigureLegalMoves(square.occupiedBy));
+        setAvailableMoves(square.occupiedBy.getFigureLegalMoves(gameBoard, enemyFigures));
     }
 
     function moveFigure(square) {
@@ -70,29 +55,20 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
         document.querySelector('.checked')?.classList.remove('checked');
         gameBoardCopy[selectedFigure.position -1].occupiedBy = null;
         selectedFigure.position = square.position;
+        selectedFigure.hasMoved = true;
         gameBoardCopy[square.position -1].occupiedBy = selectedFigure;
-        if (seeIfCheck(gameBoardCopy, square.occupiedBy, true)) setCheckedPlayer(true);
+        if (selectedFigure.seeIfCheck(gameBoardCopy, square.occupiedBy, true)) setCheckedPlayer(true);
         setSelectedFigure(null);
         setAvailableMoves(null);
         setGameBoard(gameBoardCopy);
         switchTurn();
     }
 
-    function seeIfCheck(board, figure, shouldPaintOnCheck = false) {
-        const nextPositions = figure.getDefaultMoves(board);
-        let check = false;
-        nextPositions.forEach(position => {
-            if (board[position - 1].occupiedBy?.type === 'king') {
-                if (shouldPaintOnCheck) document.getElementById(position).classList.add('checked');
-                check = true;
-            }
-        });
-        return check;
-    }
 
     function toggleSelectedStyles(figure) {
+        const enemyFigures = currentTurn === 'black' ? whiteFigures : blackFigures;
         const toggleClass = (className, id) => document.getElementById(id).classList.toggle(className);
-        const positions = getFigureLegalMoves(figure);
+        const positions = figure.getFigureLegalMoves(gameBoard, enemyFigures);
         toggleClass('selected', figure.position);
         positions.forEach(position => {
             if (gameBoard[position -1].occupiedBy) toggleClass('potential-move-take', position);

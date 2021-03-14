@@ -7,12 +7,38 @@ export default class Figure {
         this.position = position;
     }
 
+    getFigureLegalMoves(gameBoard, enemyFigures) {
+        let availablePositions = this.getDefaultMoves(gameBoard);
+        availablePositions.forEach(potentialPositon => {
+            const boardCopy = [...gameBoard].map(square => Object.create(square)); //Get a deep copy
+            boardCopy[this.position - 1].occupiedBy = null;
+            boardCopy[potentialPositon - 1].occupiedBy = this;
+            enemyFigures.forEach(fig => {
+                if (potentialPositon === fig.position) return; // Meaning we can take the attacking figure
+                if (this.seeIfCheck(boardCopy, fig)) availablePositions = availablePositions.filter(position => position !== potentialPositon);
+            });
+        });
+        return availablePositions;
+    }
+
+    seeIfCheck(board, figure, shouldPaintOnCheck = false) {
+        const nextPositions = figure.getDefaultMoves(board);
+        let check = false;
+        nextPositions.forEach(position => {
+            if (board[position - 1].occupiedBy?.type === 'king') {
+                if (shouldPaintOnCheck) document.getElementById(position).classList.add('checked');
+                check = true;
+            }
+        });
+        return check;
+    }
+
     getDefaultMoves(board) {
         if (this.type === 'pawn') return this.getPawnMoves(board);
         if (this.type === 'knight') return this.getKnightMoves(board);
         if (this.type === 'rook') return [...this.getHorizontalMoves(board), ...this.getVerticalMoves(board)];
-        if (this.type === 'bishop') return this.invokeGetDiagonalMoves(board);
-        return [...this.invokeGetDiagonalMoves(board), ...this.getVerticalMoves(board), ...this.getHorizontalMoves(board)];
+        if (this.type === 'bishop') return this.getDiagonalMoves(board);
+        return [...this.getDiagonalMoves(board), ...this.getVerticalMoves(board), ...this.getHorizontalMoves(board)];
     }
 
     getVerticalMoves(board) {
@@ -32,48 +58,22 @@ export default class Figure {
         return [...rightMoves, ...leftMoves];
     }
 
-    invokeGetDiagonalMoves(board) {
-        return [
-            ...this.getDiagonalMoves(board, 'top-left'),
-            ...this.getDiagonalMoves(board, 'top-right'),
-            ...this.getDiagonalMoves(board, 'bottom-left'),
-            ...this.getDiagonalMoves(board, 'bottom-right'),
-        ];
-    }
-    getDiagonalMoves(board, direction) {
-        let differnce, returnCondition;
-
-        switch (direction) {
-            case 'top-left': {
-                differnce = -9;
-                returnCondition = firstCol.includes(this.position);
-                break;
-            }
-            case 'top-right': {
-                differnce = -7;
-                returnCondition = eighthCol.includes(this.position);
-                break;
-            }
-            case 'bottom-left': {
-                differnce = 7;
-                returnCondition = firstCol.includes(this.position);
-                break;
-            }
-            case 'bottom-right': {
-                differnce = 9;
-                returnCondition = eighthCol.includes(this.position);
-                break;
-            }
-            default: return;
-        }
-        // If figure is on the border it shouldn't go in the direction of said border
-        if (returnCondition) return [];
-        return this.getAvailableSquares(board, differnce, true);
-    }
-
-    getAvailableSquares(board, differnce, goingSideways = false) {
+    getDiagonalMoves(board) {
         const moves = [];
-        let nextPosition = this.position + differnce;
+        if (!firstCol.includes(this.position)) {
+            moves.push(...this.getAvailableSquares(board, -9, true));
+            moves.push(...this.getAvailableSquares(board, 7, true));
+        }
+        if (!eighthCol.includes(this.position))  {
+            moves.push(...this.getAvailableSquares(board, 9, true));
+            moves.push(...this.getAvailableSquares(board, -7, true));
+        }
+        return moves;
+    }
+
+    getAvailableSquares(board, difference, goingSideways = false) {
+        const moves = [];
+        let nextPosition = this.position + difference;
 
         while (nextPosition < 65 && nextPosition > 0) {
             const squareIsFree = board[nextPosition - 1].occupiedBy === null;
@@ -84,7 +84,7 @@ export default class Figure {
             if (this.type === 'king' || enemyIsOnSquare) break;
             // Prevents from jumping to next row
             if (goingSideways && (firstCol.includes(nextPosition) || eighthCol.includes(nextPosition))) break;
-            nextPosition += differnce;
+            nextPosition += difference;
         }
         return moves;
     }
@@ -98,14 +98,11 @@ export default class Figure {
         const nextPosRight = this.position + (isBlack ? 7 : -7);
         const enemyIsOnLeftSquare = (board[nextPosLeft - 1]?.occupiedBy && board[nextPosLeft - 1].occupiedBy.color !== this.color);
         const enemyIsOnRightSquare = (board[nextPosRight - 1]?.occupiedBy && board[nextPosRight - 1].occupiedBy.color !== this.color);
-        const hasNotMoved = isBlack ? [9, 10, 11, 12, 13, 14 , 15, 16].includes(this.position)
-                                 : [49, 50, 51, 52, 53, 54 , 55, 56].includes(this.position);
 
         if (enemyIsOnLeftSquare && !this.hasMoved) moves.push(nextPosLeft);
         if (enemyIsOnRightSquare && !this.hasMoved) moves.push(nextPosRight);
         if (!board[nextPosFwd - 1].occupiedBy) moves.push(nextPosFwd);
-        if (hasNotMoved && !board[secondPosFwd - 1].occupiedBy) moves.push(secondPosFwd);
-
+        if (!this.hasMoved && !board[secondPosFwd - 1].occupiedBy) moves.push(secondPosFwd);
 
         return moves;
     }
@@ -130,5 +127,4 @@ export default class Figure {
         });
         return moves;
     }
-
 }
