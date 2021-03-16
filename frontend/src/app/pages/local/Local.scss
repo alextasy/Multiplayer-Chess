@@ -9,10 +9,11 @@
         width: fit-content;
         height: fit-content;
         border: 8px solid $highlight;
+        border-radius: 6px;
 
         .square {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
         }
     }
 }
