@@ -1,3 +1,4 @@
+import React from 'react';
 import Square from './board-elements/square';
 
 let intialBoard;
@@ -27,3 +28,11 @@ export const fifthCol = [5, 13, 21, 29, 37, 45, 53, 61];
 export const sixthCol = [6, 14, 22, 30, 38, 46, 54, 62];
 export const seventhCol = [7, 15, 23, 31, 39, 47, 55, 63];
 export const eighthCol = [8, 16, 24, 32, 40, 48, 56, 64];
+
+export const rowRanks = Array.from(Array(8)).map((_, i) => {
+   return <span style={{ color: i % 2 === 1 ? 'var(--primary)' : 'var(--text)' }} key={i}>{ i + 1 }</span>
+});
+
+export const colRanks = Array.from(Array(8)).map((_, i) => {
+    return <span style={{ color: i % 2 === 1 ? 'var(--primary)' : 'var(--text)' }} key={i}>{ String.fromCharCode(i + 97) }</span>
+ });

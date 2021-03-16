@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import './Board.scss';
 import { withRouter } from 'react-router-dom';
-import { initialSetUp, setFigures } from './boardHelper';
+import { initialSetUp, setFigures, rowRanks, colRanks } from './boardHelper';
 
 function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
     const [gameBoard, setGameBoard] = useState(initialSetUp());
@@ -100,26 +100,30 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
     }
 
     return (
-        <div className='Board' style={{ transform: playerIsBlack ? 'rotate(180deg)' :null }}>
-            { gameBoard.map(square => (
-                <div className='square'
-                    style={{ backgroundColor: square.color }}
-                    id={ square.position }
-                    key={ square.position }
-                    onClick={ () => {
-                        if (!playable) return;
-                        selectedFigure ? moveFigure(square) : selectFigure(square) }
-                    }>
-                    {
-                        square.occupiedBy ?
-                        <img
-                            src={ square?.occupiedBy?.img?.src }
-                            alt={ square?.occupiedBy?.img?.alt }
-                            style={{ transform: playerIsBlack ? 'rotate(180deg)' : null }}>
-                        </img> : null
-                    }
-                </div>))
-            }
+        <div className='Board'>
+            <div className='wrapper' style={{ transform: playerIsBlack ? 'rotate(180deg)' : null }}>
+                { gameBoard.map(square => (
+                    <div className='square'
+                        style={{ backgroundColor: square.color }}
+                        id={ square.position }
+                        key={ square.position }
+                        onClick={ () => {
+                            if (!playable) return;
+                            selectedFigure ? moveFigure(square) : selectFigure(square) }
+                        }>
+                        {
+                            square.occupiedBy ?
+                            <img
+                                src={ square?.occupiedBy?.img?.src }
+                                alt={ square?.occupiedBy?.img?.alt }
+                                style={{ transform: playerIsBlack ? 'rotate(180deg)' : null }}>
+                            </img> : null
+                        }
+                    </div>))
+                }
+            </div>
+            <div className='row-ranks'>{ rowRanks }</div>
+            <div className='col-ranks'>{ colRanks }</div>
         </div>
     )
 }

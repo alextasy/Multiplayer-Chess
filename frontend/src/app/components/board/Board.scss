@@ -1,46 +1,82 @@
 @import '../../../global';
 
 .Board {
-    width: 500px;
-    height: 500px;
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    user-select: none;
+    position: relative;
+    --size: 62.5px;
+    .wrapper {
+        width: fit-content;
+        height: fit-content;
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        user-select: none;
 
-    .square {
-        width: 62.5px;
-        height: 62.5px;
-        position: relative;
-        @include flex-center(row);
+        .square {
+            width: var(--size);
+            height: var(--size);
+            position: relative;
+            @include flex-center(row);
 
-        &.checked {
-            background-color: rgb(226, 117, 98) !important;
-        }
+            &.checked {
+                background-color: rgb(226, 117, 98) !important;
+            }
 
-        &.selected {
-            background-color: $selected !important;
-        }
+            &.selected {
+                background-color: $selected !important;
+            }
 
-        &.potential-move::after {
-            content: '';
-            width: 35%;
-            height: 35%;
-            border-radius: 50%;
-            background-color: $available-positions;
-        }
+            &.potential-move::after {
+                content: '';
+                width: 35%;
+                height: 35%;
+                border-radius: 50%;
+                background-color: $available-positions;
+            }
 
-        &.potential-move-take::after {
-            content: '';
-            width: 75%;
-            height: 75%;
-            border-radius: 50%;
-            background-color: transparent;
-            border: 5px solid $available-takes;
-            position: absolute;
-        }
+            &.potential-move-take::after {
+                content: '';
+                width: 75%;
+                height: 75%;
+                border-radius: 50%;
+                background-color: transparent;
+                border: 5px solid $available-takes;
+                position: absolute;
+            }
 
-        img {
-            width: 90%;
+            img {
+                width: 85%;
+            }
         }
     }
+
+    .row-ranks, .col-ranks {
+        position: absolute;
+        display: flex;
+        span {
+            width: var(--size);
+            height: var(--size);
+            font-weight: bold;
+            font-size: 18px;
+        }
+    }
+
+    .row-ranks {
+        top: 0;
+        flex-direction: column-reverse;
+        span {
+            padding-top: 4px;
+            padding-left: 4px;
+        }
+    }
+
+    .col-ranks {
+        bottom: 0;
+        span {
+            padding-bottom: 4px;
+            padding-right: 4px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+        }
+    }
+
 }
