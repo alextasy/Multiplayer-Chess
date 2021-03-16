@@ -69,17 +69,16 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
         switchTurn();
     }
 
-    function handleCastling(board, nextPosition) {
+    function handleCastling(board, kingNextPos) {
         const castlingPositions = currentTurn === 'black' ? [3, 7] : [59, 63];
-        if (selectedFigure.lastPosition || !castlingPositions.includes(nextPosition)) return;
-        if (nextPosition === castlingPositions[0]) {
-            // Move queen side rook to the skipped square
-            board[nextPosition].occupiedBy = board[nextPosition - 3].occupiedBy;
-            board[nextPosition - 3].occupiedBy = null;
-            return;
-        }
-        board[nextPosition - 2].occupiedBy = board[nextPosition].occupiedBy;
-        board[nextPosition].occupiedBy = null;
+        if (selectedFigure.lastPosition || !castlingPositions.includes(kingNextPos)) return;
+        const queenSide = kingNextPos === castlingPositions[0];
+        const currentRookSquare = queenSide ? board[kingNextPos - 3] : board[kingNextPos];
+        const futureRookSquare = queenSide ? board[kingNextPos] : board[kingNextPos - 2];
+
+        futureRookSquare.occupiedBy = currentRookSquare.occupiedBy;
+        futureRookSquare.occupiedBy.position = futureRookSquare.position;
+        currentRookSquare.occupiedBy = null;
     }
 
     function toggleSelectedStyles(figure) {
