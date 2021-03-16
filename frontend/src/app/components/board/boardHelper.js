@@ -7,7 +7,7 @@ export function initialSetUp() {
     let colorShouldInverse = false;
 
     for (let i = 1; i <= 64; i++) {
-        const square = new Square(i, i % 2 === Number(colorShouldInverse) ? '#537133' : '#ebebeb');
+        const square = new Square(i, i % 2 === Number(colorShouldInverse) ? 'var(--primaryDark)' : 'var(--text)');
         arr.push(square);
         if (i % 8 === 0) colorShouldInverse = !colorShouldInverse;
     }
