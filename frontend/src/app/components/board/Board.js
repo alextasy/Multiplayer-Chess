@@ -53,9 +53,11 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
            else setWhiteFigures(whiteFigures.filter(figure => figure !== square.occupiedBy));
         }
         document.querySelector('.checked')?.classList.remove('checked');
+        if (selectedFigure.type === 'king') handleCastling(gameBoardCopy, square.position);
         gameBoardCopy[selectedFigure.position -1].occupiedBy = null;
+        selectedFigure.lastPosition = selectedFigure.position;
         selectedFigure.position = square.position;
-        selectedFigure.hasMoved = true;
+
         gameBoardCopy[square.position -1].occupiedBy = selectedFigure;
         if (selectedFigure.seeIfCheck(gameBoardCopy, square.occupiedBy)) {
             document.getElementById(square.position).classList.add('checked');
@@ -67,6 +69,18 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
         switchTurn();
     }
 
+    function handleCastling(board, nextPosition) {
+        const castlingPositions = currentTurn === 'black' ? [3, 7] : [59, 63];
+        if (selectedFigure.lastPosition || !castlingPositions.includes(nextPosition)) return;
+        if (nextPosition === castlingPositions[0]) {
+            // Move queen side rook to the skipped square
+            board[nextPosition].occupiedBy = board[nextPosition - 3].occupiedBy;
+            board[nextPosition - 3].occupiedBy = null;
+            return;
+        }
+        board[nextPosition - 2].occupiedBy = board[nextPosition].occupiedBy;
+        board[nextPosition].occupiedBy = null;
+    }
 
     function toggleSelectedStyles(figure) {
         const enemyFigures = currentTurn === 'black' ? whiteFigures : blackFigures;

@@ -7,10 +7,11 @@ export default class Figure {
         this.position = position;
     }
 
-    getFigureLegalMoves(gameBoard, enemyFigures) {
-        let availablePositions = this.getDefaultMoves(gameBoard);
+    getFigureLegalMoves(board, enemyFigures) {
+        let availablePositions = this.getDefaultMoves(board);
+        if (this.type === 'king') availablePositions.push(...this.getCastlingMoves(board));
         availablePositions.forEach(potentialPositon => {
-            const boardCopy = [...gameBoard].map(square => Object.create(square)); //Get a deep copy
+            const boardCopy = [...board].map(square => Object.create(square)); //Get a deep copy
             boardCopy[this.position - 1].occupiedBy = null;
             boardCopy[potentialPositon - 1].occupiedBy = this;
             enemyFigures.forEach(fig => {
@@ -28,6 +29,23 @@ export default class Figure {
             if (board[position - 1].occupiedBy?.type === 'king') check = true;
         });
         return check;
+    }
+
+    getCastlingMoves(board) {
+        if (this.checked || this.lastPosition) return [];
+        const moves = [];
+        const rookPositons = this.color === 'black' ? [1, 8] : [57, 64];
+        // Checks if there is a square that is taken at the positions -1, -2, -3 in relation to the king (this) and -1 more due to array index
+        const queenSideSquaresTaken = (board[this.position - 2].occupiedBy || board[this.position - 3].occupiedBy || board[this.position - 4].occupiedBy);
+        const kingSideSquaresTaken = (board[this.position].occupiedBy || board[this.position + 1].occupiedBy);
+        for (const pos of rookPositons) {
+            const queenSideCheck = (pos === 1 || pos === 57);
+            const availableMove = pos + (queenSideCheck ? 2 : -1);
+            if (queenSideCheck && queenSideSquaresTaken) continue;
+            if (!queenSideCheck && kingSideSquaresTaken) break;
+            if (board[pos -1].occupiedBy && !board[pos -1].occupiedBy.lastPosition) moves.push(availableMove);
+        }
+        return moves;
     }
 
     getDefaultMoves(board) {
@@ -98,7 +116,7 @@ export default class Figure {
         if (enemyIsOnLeftSquare) moves.push(nextPosLeft);
         if (enemyIsOnRightSquare) moves.push(nextPosRight);
         if (!board[nextPosFwd - 1].occupiedBy) moves.push(nextPosFwd);
-        if (!this.hasMoved && !board[secondPosFwd - 1].occupiedBy) moves.push(secondPosFwd);
+        if (!this.lastPosition && !board[secondPosFwd - 1].occupiedBy && !board[nextPosFwd - 1].occupiedBy) moves.push(secondPosFwd);
 
         return moves;
     }
