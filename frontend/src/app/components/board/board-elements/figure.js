@@ -24,11 +24,15 @@ export default class Figure {
 
     seeIfCheck(board, figure) {
         const nextPositions = figure.getDefaultMoves(board);
-        let check = false;
+        let checkedKingPos = null;
         nextPositions.forEach(position => {
-            if (board[position - 1].occupiedBy?.type === 'king') check = true;
+            if (board[position - 1].occupiedBy?.type === 'king') checkedKingPos = position;
         });
-        return check;
+        return checkedKingPos;
+    }
+
+    seeIfPromoted() {
+        return (this.type === 'pawn' && (this.position < 9 || this.position > 56));
     }
 
     getCastlingMoves(board) {

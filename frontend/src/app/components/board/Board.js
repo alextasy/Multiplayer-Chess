@@ -57,10 +57,11 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
         gameBoardCopy[selectedFigure.position -1].occupiedBy = null;
         selectedFigure.lastPosition = selectedFigure.position;
         selectedFigure.position = square.position;
-
         gameBoardCopy[square.position -1].occupiedBy = selectedFigure;
-        if (selectedFigure.seeIfCheck(gameBoardCopy, square.occupiedBy)) {
-            document.getElementById(square.position).classList.add('checked');
+        if (selectedFigure.seeIfPromoted()) selectedFigure.type = 'queen';
+        const checkedKing = selectedFigure.seeIfCheck(gameBoardCopy, square.occupiedBy);
+        if (checkedKing) {
+            document.getElementById(checkedKing).classList.add('checked');
             setCheckedPlayer(true);
         }
         setSelectedFigure(null);
