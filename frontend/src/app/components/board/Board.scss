@@ -2,13 +2,13 @@
 
 .Board {
     position: relative;
+    user-select: none;
     --size: 62.5px;
     .wrapper {
         width: fit-content;
         height: fit-content;
         display: grid;
         grid-template-columns: repeat(8, 1fr);
-        user-select: none;
 
         .square {
             width: var(--size);
@@ -51,6 +51,7 @@
     .row-ranks, .col-ranks {
         position: absolute;
         display: flex;
+        pointer-events: none;
         span {
             width: var(--size);
             height: var(--size);
