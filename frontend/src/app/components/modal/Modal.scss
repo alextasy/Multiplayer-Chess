@@ -1,0 +1,60 @@
+@import '../../../global';
+
+.Modal {
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 1000;
+        background-color: rgba(0, 0, 0, 0.6);
+        animation: fade_in 300ms ease-out forwards;
+        overflow: hidden;
+
+        &.closing {
+            animation: fade_in 300ms ease-out forwards alternate-reverse;
+        }
+
+        @keyframes fade_in {
+            0% {
+                background-color: rgba(0, 0, 0, 0);
+            }
+            100% {
+                background-color: rgba(0, 0, 0, 0.6);
+            }
+        }
+    }
+
+    .modal-container {
+        background-color: $text;
+        width: 250px;
+        height: 250px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1001;
+        animation: slide 500ms ease-out;
+
+        &.closing {
+            animation: slide 500ms ease-out forwards alternate-reverse;
+        }
+
+        @keyframes slide {
+            0% {
+                top: 100%;
+                transform: translate(-50%, 50%);
+            }
+            65% {
+                top: 30%;
+                transform: translate(-50%, -30%);
+            }
+            100% {
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+    }
+
+}
