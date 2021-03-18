@@ -80,4 +80,33 @@
         }
     }
 
+    .Modal .modal-container {
+        width: 600px;
+        background-color: transparent;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+
+        .promotion-container {
+            @include flex-center(row);
+            .promotion-class {
+                width: 125px;
+                height: 125px;
+                background-color: $text;
+                margin: 10px;
+                border-radius: 5px;
+                border: 3px solid $primary;
+                @include flex-center(row);
+                transition: all 200ms ease-in-out;
+                img {
+                    width: 85%;
+                }
+            }
+
+            .promotion-class:hover{
+                width: 150px;
+                height: 150px;
+            }
+        }
+    }
 }

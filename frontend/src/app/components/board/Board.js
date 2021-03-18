@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import './Board.scss';
 import { withRouter } from 'react-router-dom';
-import { initialSetUp, setFigures, rowRanks, colRanks } from './boardHelper';
+import { initialSetUp, setFigures, rowRanks, colRanks, promotionModal } from './boardHelper';
 
 function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
     const [gameBoard, setGameBoard] = useState(initialSetUp());
@@ -12,6 +12,9 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
     const [blackFigures, setBlackFigures] = useState(setFigures('black'));
     const [whiteFigures, setWhiteFigures] = useState(setFigures('white'));
     const [checkedPlayer, setCheckedPlayer] = useState(null);
+    const [promotionModalOpen, setPromotionModalOpen] = useState(null);
+    const pawnPromotionModal = promotionModalOpen ? promotionModal(()=> { promotionModalOpen.resolve(); setPromotionModalOpen(false) }, currentTurn) : null;
+    console.log(promotionModalOpen);
 
     if (checkedPlayer) {
         let hasLegalMoves = false;
@@ -35,7 +38,7 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
         setAvailableMoves(square.occupiedBy.getFigureLegalMoves(gameBoard, enemyFigures));
     }
 
-    function moveFigure(square) {
+    async function moveFigure(square) {
         toggleSelectedStyles(selectedFigure);
 
         if (square.position !== selectedFigure.position && square.occupiedBy?.color === currentTurn) {
@@ -58,7 +61,8 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
         selectedFigure.lastPosition = selectedFigure.position;
         selectedFigure.position = square.position;
         gameBoardCopy[square.position -1].occupiedBy = selectedFigure;
-        if (selectedFigure.seeIfPromoted()) selectedFigure.type = 'queen';
+        //if (selectedFigure.seeIfPromoted())
+        await handlePawnPromotion(gameBoardCopy);
         const checkedKing = selectedFigure.seeIfCheck(gameBoardCopy, square.occupiedBy);
         if (checkedKing) {
             document.getElementById(checkedKing).classList.add('checked');
@@ -82,6 +86,12 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
         currentRookSquare.occupiedBy = null;
     }
 
+    function handlePawnPromotion(board) {
+        return new Promise(resolve => {
+            setPromotionModalOpen({resolve: resolve});
+        });
+    }
+
     function toggleSelectedStyles(figure) {
         const enemyFigures = currentTurn === 'black' ? whiteFigures : blackFigures;
         const toggleClass = (className, id) => document.getElementById(id).classList.toggle(className);
@@ -89,7 +99,7 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
         toggleClass('selected', figure.position);
         positions.forEach(position => {
             if (gameBoard[position -1].occupiedBy) toggleClass('potential-move-take', position);
-            else toggleClass('potential-move', position)
+            else toggleClass('potential-move', position);
         });
     }
 
@@ -125,6 +135,7 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
             </div>
             <div className='row-ranks'>{ rowRanks }</div>
             <div className='col-ranks'>{ colRanks }</div>
+            { pawnPromotionModal }
         </div>
     )
 }

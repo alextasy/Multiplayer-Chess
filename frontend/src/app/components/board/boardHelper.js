@@ -1,5 +1,25 @@
 import React from 'react';
 import Square from './board-elements/square';
+import bBishop from '../../../assets/figure-images/b-bishop.png';
+import bKnight from '../../../assets/figure-images/b-knight.png';
+import bQueen from '../../../assets/figure-images/b-queen.png';
+import bRook from '../../../assets/figure-images/b-rook.png';
+import wBishop from '../../../assets/figure-images/w-bishop.png';
+import wKnight from '../../../assets/figure-images/w-knight.png';
+import wQueen from '../../../assets/figure-images/w-queen.png';
+import wRook from '../../../assets/figure-images/w-rook.png';
+import Modal, { closeModal } from '../modal/Modal';
+
+const imageSources = {
+    blackBishop: bBishop,
+    blackKnight: bKnight,
+    blackQueen: bQueen,
+    blackRook: bRook,
+    whiteBishop: wBishop,
+    whiteKnight: wKnight,
+    whiteQueen: wQueen,
+    whiteRook: wRook,
+}
 
 let intialBoard;
 
@@ -35,4 +55,17 @@ export const rowRanks = Array.from(Array(8)).map((_, i) => {
 
 export const colRanks = Array.from(Array(8)).map((_, i) => {
     return <span style={{ color: i % 2 === 1 ? 'var(--primary)' : 'var(--text)' }} key={i}>{ String.fromCharCode(i + 97) }</span>
- });
+});
+
+export const promotionModal = (closeFunction, turn) => (
+    <Modal>
+        <h1>CHOOSE A CLASS FOR YOUR PAWN:</h1>
+        <div className='promotion-container'>
+            { ['Rook', 'Knight', 'Queen', 'Bishop'].map(type => (
+                <div className='promotion-class' onClick={ (type)=> closeModal(closeFunction.bind(null, type)) }>
+                    <img src={imageSources[`${turn}${type}`]} alt={type} key={type}/>
+                </div>
+            ))}
+        </div>
+    </Modal>
+);
