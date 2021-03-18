@@ -31,7 +31,7 @@ export default class Figure {
         return checkedKingPos;
     }
 
-    seeIfPromoted() {
+    canPromote() {
         return (this.type === 'pawn' && (this.position < 9 || this.position > 56));
     }
 

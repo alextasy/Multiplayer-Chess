@@ -10,17 +10,6 @@ import wQueen from '../../../assets/figure-images/w-queen.png';
 import wRook from '../../../assets/figure-images/w-rook.png';
 import Modal, { closeModal } from '../modal/Modal';
 
-const imageSources = {
-    blackBishop: bBishop,
-    blackKnight: bKnight,
-    blackQueen: bQueen,
-    blackRook: bRook,
-    whiteBishop: wBishop,
-    whiteKnight: wKnight,
-    whiteQueen: wQueen,
-    whiteRook: wRook,
-}
-
 let intialBoard;
 
 export function initialSetUp() {
@@ -57,13 +46,24 @@ export const colRanks = Array.from(Array(8)).map((_, i) => {
     return <span style={{ color: i % 2 === 1 ? 'var(--primary)' : 'var(--text)' }} key={i}>{ String.fromCharCode(i + 97) }</span>
 });
 
-export const promotionModal = (closeFunction, turn) => (
+export const imageSources = {
+    black_bishop: bBishop,
+    black_knight: bKnight,
+    black_queen: bQueen,
+    black_rook: bRook,
+    white_bishop: wBishop,
+    white_knight: wKnight,
+    white_queen: wQueen,
+    white_rook: wRook,
+}
+
+export const promotionModal = ({ close, color }) => (
     <Modal>
         <h1>CHOOSE A CLASS FOR YOUR PAWN:</h1>
         <div className='promotion-container'>
-            { ['Rook', 'Knight', 'Queen', 'Bishop'].map(type => (
-                <div className='promotion-class' onClick={ (type)=> closeModal(closeFunction.bind(null, type)) }>
-                    <img src={imageSources[`${turn}${type}`]} alt={type} key={type}/>
+            { ['rook', 'knight', 'queen', 'bishop'].map(type => (
+                <div className='promotion-class' onClick={ _=> closeModal(close.bind(_, type)) } key={ type }>
+                    <img src={ imageSources[`${color}_${type}`] } alt={ type }/>
                 </div>
             ))}
         </div>

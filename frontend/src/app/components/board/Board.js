@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import './Board.scss';
 import { withRouter } from 'react-router-dom';
-import { initialSetUp, setFigures, rowRanks, colRanks, promotionModal } from './boardHelper';
+import { initialSetUp, setFigures, rowRanks, colRanks, promotionModal, imageSources } from './boardHelper';
 
 function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
     const [gameBoard, setGameBoard] = useState(initialSetUp());
@@ -12,9 +12,7 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
     const [blackFigures, setBlackFigures] = useState(setFigures('black'));
     const [whiteFigures, setWhiteFigures] = useState(setFigures('white'));
     const [checkedPlayer, setCheckedPlayer] = useState(null);
-    const [promotionModalOpen, setPromotionModalOpen] = useState(null);
-    const pawnPromotionModal = promotionModalOpen ? promotionModal(()=> { promotionModalOpen.resolve(); setPromotionModalOpen(false) }, currentTurn) : null;
-    console.log(promotionModalOpen);
+    const [promoModalState, setPromoModalState] = useState(null);
 
     if (checkedPlayer) {
         let hasLegalMoves = false;
@@ -61,8 +59,7 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
         selectedFigure.lastPosition = selectedFigure.position;
         selectedFigure.position = square.position;
         gameBoardCopy[square.position -1].occupiedBy = selectedFigure;
-        //if (selectedFigure.seeIfPromoted())
-        await handlePawnPromotion(gameBoardCopy);
+        if (selectedFigure.canPromote()) await handlePawnPromotion();
         const checkedKing = selectedFigure.seeIfCheck(gameBoardCopy, square.occupiedBy);
         if (checkedKing) {
             document.getElementById(checkedKing).classList.add('checked');
@@ -86,9 +83,18 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
         currentRookSquare.occupiedBy = null;
     }
 
-    function handlePawnPromotion(board) {
+    function handlePawnPromotion() {
         return new Promise(resolve => {
-            setPromotionModalOpen({resolve: resolve});
+            const closeFunction = (type) => {
+                selectedFigure.type = type;
+                selectedFigure.img = {
+                    src: imageSources[`${currentTurn}_${type}`],
+                    alt: `${currentTurn} ${type}`
+                };
+                resolve();
+                setPromoModalState(null);
+            }
+            setPromoModalState({ close: closeFunction, color: currentTurn });
         });
     }
 
@@ -135,7 +141,7 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
             </div>
             <div className='row-ranks'>{ rowRanks }</div>
             <div className='col-ranks'>{ colRanks }</div>
-            { pawnPromotionModal }
+            { promoModalState ? promotionModal( promoModalState) : ''}
         </div>
     )
 }
