@@ -21,7 +21,6 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
         const enemyFigures = currentTurn === 'black' ? whiteFigures : blackFigures;
         const checkAllLegalMoves = figures => {
             figures.forEach(fig => {
-                console.log(fig.type, fig.getFigureLegalMoves(gameBoard, enemyFigures));
                 if (fig.getFigureLegalMoves(gameBoard, enemyFigures).length > 0) hasLegalMoves = true;
             });
         }
