@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './Board.scss';
 import { withRouter } from 'react-router-dom';
 import { initialSetUp, setFigures, rowRanks, colRanks, promotionModal, imageSources } from './boardHelper';
@@ -14,19 +14,21 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
     const [checkedPlayer, setCheckedPlayer] = useState(null);
     const [promoModalState, setPromoModalState] = useState(null);
 
-    if (checkedPlayer) {
+    useEffect(() => {
+        if (!checkedPlayer) return;
+
         let hasLegalMoves = false;
         const enemyFigures = currentTurn === 'black' ? whiteFigures : blackFigures;
         const checkAllLegalMoves = figures => {
             figures.forEach(fig => {
+                console.log(fig.type, fig.getFigureLegalMoves(gameBoard, enemyFigures));
                 if (fig.getFigureLegalMoves(gameBoard, enemyFigures).length > 0) hasLegalMoves = true;
             });
         }
-        if (currentTurn === 'black') checkAllLegalMoves(blackFigures);
-        else checkAllLegalMoves(whiteFigures);
+        currentTurn === 'black' ? checkAllLegalMoves(blackFigures) : checkAllLegalMoves(whiteFigures);
         if (!hasLegalMoves) console.log('GG');
         else setCheckedPlayer(false);
-    }
+    }, [currentTurn]);
 
     function selectFigure(square) {
         const enemyFigures = currentTurn === 'black' ? whiteFigures : blackFigures;
@@ -48,12 +50,9 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
             setAvailableMoves(null);
             return;
         }
-        const gameBoardCopy = [...gameBoard];
-        if (square.occupiedBy) {
-           if (currentTurn === 'white') setBlackFigures(blackFigures.filter(figure => figure !== square.occupiedBy));
-           else setWhiteFigures(whiteFigures.filter(figure => figure !== square.occupiedBy));
-        }
         document.querySelector('.checked')?.classList.remove('checked');
+        const gameBoardCopy = [...gameBoard];
+        if (square.occupiedBy) takeFigure(square.occupiedBy);
         if (selectedFigure.type === 'king') handleCastling(gameBoardCopy, square.position);
         gameBoardCopy[selectedFigure.position -1].occupiedBy = null;
         selectedFigure.lastPosition = selectedFigure.position;
@@ -69,6 +68,11 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
         setAvailableMoves(null);
         setGameBoard(gameBoardCopy);
         switchTurn();
+    }
+
+    function takeFigure(figureToRemove) {
+        const enemyFigures = currentTurn === 'white' ? setBlackFigures : setWhiteFigures;
+        enemyFigures(figures => figures.filter(fig => fig !== figureToRemove));
     }
 
     function handleCastling(board, kingNextPos) {
