@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './Board.scss';
 import { withRouter } from 'react-router-dom';
-import { initialSetUp, setFigures, rowRanks, colRanks, promotionModal, imageSources } from './boardHelper';
+import { initialSetUp, setFigures, rankElements, promotionModal, imageSources } from './boardHelper';
 
 function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
     const [gameBoard, setGameBoard] = useState(initialSetUp());
@@ -142,8 +142,8 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
                     </div>))
                 }
             </div>
-            <div className='row-ranks'>{ rowRanks }</div>
-            <div className='col-ranks'>{ colRanks }</div>
+            <div className='row-ranks'>{ rankElements(playerIsBlack).rowRanks }</div>
+            <div className='col-ranks'>{ rankElements(playerIsBlack).colRanks }</div>
             { promoModalState ? promotionModal( promoModalState) : ''}
         </div>
     )
