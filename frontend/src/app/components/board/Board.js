@@ -17,6 +17,11 @@ function Board({ playingAsBlack, isMyTurn = true, playable = true, location, aut
     const [playerIsBlack, setPlayerIsBlack] = useState(playingAsBlack);
     const context = useContext(GameContext);
 
+    // Rotate the board when props get updated
+    useEffect(() => {
+        setPlayerIsBlack(playingAsBlack);
+    }, [playingAsBlack]);
+
     useEffect(() => {
         if (!checkedPlayer) return;
 
