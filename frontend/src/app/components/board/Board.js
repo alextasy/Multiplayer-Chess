@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { initialSetUp, setFigures, rankElements, promotionModal, imageSources } from './boardHelper';
 import { GameContext } from '../../context/GameContext';
 
-function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
+function Board({ playingAsBlack, isMyTurn = true, playable = true, location, autoRotate }) {
     const [gameBoard, setGameBoard] = useState(initialSetUp());
     const [selectedFigure, setSelectedFigure] = useState(null);
     const [currentTurn, setCurrentTurn] = useState('white');
@@ -14,6 +14,7 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
     const [whiteFigures, setWhiteFigures] = useState(setFigures('white'));
     const [checkedPlayer, setCheckedPlayer] = useState(null);
     const [promoModalState, setPromoModalState] = useState(null);
+    const [playerIsBlack, setPlayerIsBlack] = useState(playingAsBlack);
     const context = useContext(GameContext);
 
     useEffect(() => {
@@ -129,6 +130,7 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
     function switchTurn() {
         if (isLocal) {
             setCurrentTurn(currentTurn === 'white' ? 'black' : 'white');
+            if (autoRotate) setPlayerIsBlack(!playerIsBlack);
             return;
         }
     }
