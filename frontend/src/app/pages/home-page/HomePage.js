@@ -1,6 +1,5 @@
 import React from 'react';
 import './HomePage.scss';
-import SideMenu from '../../components/side-menu/SideMenu';
 import Board from '../../components/board/Board';
 import Button from '../../components/button/Button';
 import { withRouter } from 'react-router-dom';
@@ -20,7 +19,7 @@ function HomePage({ history }) {
                     <Button click={()=> history.push('/sign-in')} color='highlight'>PLAY AS A GUEST</Button>
                 </div>
             </div>
-            <Board />
+            <Board playable={ false }/>
             <HorizontalLine width='70%'/>
         </div>
     )
