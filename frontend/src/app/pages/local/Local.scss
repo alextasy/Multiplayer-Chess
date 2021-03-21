@@ -3,11 +3,21 @@
 .Local {
     width: 100%;
     height: 100%;
-    @include flex-center(row);
+    display: flex;
+    align-items: center;
 
     .Board {
-        border: 8px solid $highlight;
         border-radius: 6px;
         --size: 100px;
+        margin: 0 auto;
+        overflow: hidden;
+    }
+
+    aside {
+        width: 470px;
+        height: 100vh;
+        background-color: $backgroundDark;
+        display: flex;
+        justify-content: center;
     }
 }

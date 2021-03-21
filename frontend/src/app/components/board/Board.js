@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import './Board.scss';
 import { withRouter } from 'react-router-dom';
 import { initialSetUp, setFigures, rankElements, promotionModal, imageSources } from './boardHelper';
+import { GameContext } from '../../context/GameContext';
 
 function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
     const [gameBoard, setGameBoard] = useState(initialSetUp());
@@ -13,6 +14,7 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
     const [whiteFigures, setWhiteFigures] = useState(setFigures('white'));
     const [checkedPlayer, setCheckedPlayer] = useState(null);
     const [promoModalState, setPromoModalState] = useState(null);
+    const context = useContext(GameContext);
 
     useEffect(() => {
         if (!checkedPlayer) return;
@@ -63,10 +65,22 @@ function Board({ playerIsBlack, isMyTurn = true, playable = true, location }) {
             document.getElementById(checkedKing).classList.add('checked');
             setCheckedPlayer(true);
         }
+        updateMovesHistory(square.name, selectedFigure.type);
         setSelectedFigure(null);
         setAvailableMoves(null);
         setGameBoard(gameBoardCopy);
         switchTurn();
+    }
+
+    function updateMovesHistory(squareName, figureType) {
+        context.setMovesHistory(currentMoves => {
+            const move = {
+                squareName: squareName,
+                figureType: figureType,
+                player: currentTurn
+            }
+            return [...currentMoves, move];
+        });
     }
 
     function takeFigure(figureToRemove) {
