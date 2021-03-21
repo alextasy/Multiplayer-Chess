@@ -18,6 +18,22 @@
         height: 100vh;
         background-color: $backgroundDark;
         display: flex;
-        justify-content: center;
+        align-items: center;
+        padding: 50px 0;
+        flex-direction: column;
+
+        .MovesHistory {
+            height: 90%;
+        }
+
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+
+            label {
+                margin-left: 10px;
+            }
+        }
     }
 }
