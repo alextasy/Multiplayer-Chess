@@ -17,7 +17,7 @@ export function initialSetUp() {
     let colorShouldInverse = false;
 
     for (let i = 1; i <= 64; i++) {
-        const square = new Square(i, i % 2 === Number(colorShouldInverse) ? 'var(--primaryDark)' : 'var(--text)');
+        const square = new Square(i, i % 2 === Number(colorShouldInverse) ? 'var(--primaryDark)' : 'var(--secondary)');
         arr.push(square);
         if (i % 8 === 0) colorShouldInverse = !colorShouldInverse;
     }
@@ -40,7 +40,7 @@ export const eighthCol = [8, 16, 24, 32, 40, 48, 56, 64];
 
 export const rankElements = (playerIsBlack) => {
     const remainder = playerIsBlack ? 0 : 1;
-    const color = (i) => i % 2 === remainder ? 'var(--primary)' : 'var(--text)';
+    const color = (i) => i % 2 === remainder ? 'var(--primary)' : 'var(--secondary)';
     const rowRanks = Array.from(Array(8)).map((_, i) => <span style={ {color: color(i) }} key={ i }>{ i + 1 }</span>);
     // Ascii table charCode 97 is equal to "a"
     const colRanks = Array.from(Array(8)).map((_, i) => <span style={ {color: color(i) }} key={ i }>{ String.fromCharCode(i + 97) }</span>);
