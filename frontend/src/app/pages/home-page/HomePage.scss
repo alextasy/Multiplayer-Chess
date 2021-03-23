@@ -10,14 +10,13 @@
 
         h1{
             font-size: 48px;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
         }
 
         h2{
             font-size: 22px;
             font-weight: normal;
-            text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         p{
@@ -49,9 +48,8 @@
         }
     }
 
-    .Board{
-        box-sizing: initial;
-        border: 6px solid $highlight;
+    .Board {
+        --size: 75px;
     }
 
     .HorizontalLine{

@@ -3,7 +3,9 @@
 .Board {
     position: relative;
     user-select: none;
-    --size: 62.5px;
+    border-radius: 10px;
+    overflow: hidden;
+    --size: 100px;
     .wrapper {
         width: fit-content;
         height: fit-content;
