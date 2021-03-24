@@ -50,6 +50,9 @@
 
     .Board {
         --size: 75px;
+        .row-ranks span, .col-ranks span{
+            font-size: 14px;
+        }
     }
 
     .HorizontalLine{
