@@ -1,11 +1,11 @@
 import React from 'react';
-import './HomePage.scss';
+import './Home.scss';
 import Board from '../../components/board/Board';
 import Button from '../../components/button/Button';
 import { withRouter } from 'react-router-dom';
 import HorizontalLine from '../../components/horizontal-line/HorizontalLine';
 
-function HomePage({ history }) {
+function Home({ history }) {
     return (
         <div className='HomePage'>
             <div className='hero-section'>
@@ -25,4 +25,4 @@ function HomePage({ history }) {
     )
 }
 
-export default withRouter(HomePage);
+export default withRouter(Home);
