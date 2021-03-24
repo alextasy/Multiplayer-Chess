@@ -7,40 +7,30 @@
     align-items: center;
 
     .Board {
-        color: #edeecc;
         margin: 0 auto;
     }
 
-    aside {
-        width: 470px;
-        height: 100vh;
-        background-color: $backgroundDark;
+    .MovesHistory {
+        height: 90%;
+    }
+
+    .controls {
+        margin: 20px 0;
         display: flex;
         align-items: center;
-        padding: 50px 0;
-        flex-direction: column;
 
-        .MovesHistory {
-            height: 90%;
+        label {
+            margin-left: 10px;
         }
 
-        .controls {
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-
-            label {
-                margin-left: 10px;
-            }
-
-            .Button {
-                width: 80px;
-                height: 30px;
-                margin-left: 40px;
-                border-radius: 5px;
-                font-weight: normal;
-                font-size: 16px;
-            }
+        .Button {
+            width: 80px;
+            height: 30px;
+            margin-left: 40px;
+            border-radius: 5px;
+            font-weight: normal;
+            font-size: 16px;
         }
     }
+
 }
