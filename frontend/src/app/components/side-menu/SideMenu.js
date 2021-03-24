@@ -15,7 +15,7 @@ function SideMenu({ history }) {
             <Button click={()=> history.push('/create-a-room')}>ONLINE MULTIPLAYER</Button>
             <HorizontalLine />
             <h3>SIGN IN TO USE</h3>
-            <Button click={()=> history.push('/match-history')}>MATCH HISTORY</Button>
+            <Button click={()=> history.push('/multiplayer')}>MATCH HISTORY</Button>
             <Button click={()=> history.push('/profile')}>MY PROFILE</Button>
             <Button click={()=> history.push('/sign-in')} color='primary'>SIGN IN</Button>
             <p onClick={()=> history.push('/sign-up')}>Don’t have an account? Sign up!</p>

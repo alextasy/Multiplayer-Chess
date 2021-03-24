@@ -4,6 +4,7 @@ import Home from './app/pages/home/Home';
 import Local from './app/pages/local/Local';
 import SideMenu from './app/components/side-menu/SideMenu';
 import GameContextProvider from './app/context/GameContext';
+import Multiplayer from './app/pages/multiplayer/Multiplayer';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Switch>
           <Route path='/' exact component={ Home }/>
           <Route path='/local' exact component={ Local }/>
+          <Route path='/multiplayer' exact component={ Multiplayer }/>
         </Switch>
         </div>
       </div>
