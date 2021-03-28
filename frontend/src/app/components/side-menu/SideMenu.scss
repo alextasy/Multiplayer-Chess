@@ -9,32 +9,32 @@
     flex-direction: column;
     align-items: center;
 
-    img{
+    img {
         margin: 25px;
     }
 
-    h3{
+    h3 {
         font-size: 16px;
         font-weight: normal;
         color: $primary;
         margin: 25px;
     }
 
-    .Button + .HorizontalLine{
+    .Button + .HorizontalLine {
         margin-top: 25px;
     }
 
-    .Button + .Button{
+    .Button + .Button {
         margin-top: 20px;
     }
 
-    p{
+    p {
         margin-top: 5px;
         font-size: 14px;
         cursor: pointer;
     }
 
-    .quote{
+    .quote {
         margin-top: 0;
         position: absolute;
         bottom: 10px;
