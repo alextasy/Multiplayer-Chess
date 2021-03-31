@@ -4,6 +4,7 @@ import Board from '../../components/board/Board';
 import Button from '../../components/button/Button';
 import { withRouter } from 'react-router-dom';
 import HorizontalLine from '../../components/horizontal-line/HorizontalLine';
+import { signInState } from '../../components/side-menu/SideMenu';
 
 function Home({ history }) {
     return (
@@ -15,8 +16,8 @@ function Home({ history }) {
                     <b onClick={()=> history.push('/sign-up')}> SIGN UP</b> to get cool new features such as having a custom display name, tracking your match history and personal statistics! </p>
                 <p>Playing as a guest is also an option - no strings attached. You can hop on and play a quick game anonymously anytime you wish!</p>
                 <div>
-                    <Button click={()=> history.push('/sign-in')} color='primary'>SIGN IN</Button>
-                    <Button click={()=> history.push('/sign-in')} color='highlight'>PLAY AS A GUEST</Button>
+                    <Button click={()=> signInState.setSingingIn(true) } color='primary'>SIGN IN</Button>
+                    <Button click={()=> history.push('/sign-in') } color='highlight'>PLAY AS A GUEST</Button>
                 </div>
             </div>
             <Board playable={ false }/>
