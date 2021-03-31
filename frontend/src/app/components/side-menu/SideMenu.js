@@ -4,12 +4,14 @@ import logo from '../../../assets/icons/logo.png';
 import HorizontalLine from '../horizontal-line/HorizontalLine';
 import Button from '../button/Button';
 import { withRouter } from 'react-router-dom';
+import Input from '../input/Input';
+
+export const signInState = { setSigningIn: () => {} };
 
 function SideMenu({ history }) {
     const [signingIn, setSigningIn] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const usernameFieldRef = useRef(null);
     const collapseArrowRef = useRef(null);
     const intervalRef = useRef(null);
     const signInSectionRef = useRef(null);
@@ -17,10 +19,12 @@ function SideMenu({ history }) {
     const transitionTime = 250;
     const transitionDelay = 400;
 
+    signInState.setSingingIn = setSigningIn;
+
     useEffect(() => {
         if (signingIn) {
-            setTimeout( () => {
-                usernameFieldRef.current.focus();
+            setTimeout(() => {
+                document.getElementById('email').focus();
                 intervalRef.current = setInterval(() => collapseArrowRef.current.classList.toggle('active'), 750);
             }, transitionDelay + transitionTime);
         }
@@ -55,27 +59,16 @@ function SideMenu({ history }) {
                 ref={ signInSectionRef }
                 className={ `sign_in ${signingIn ? 'active' : ''}` }>
                 <form autoComplete="off">
-                    <div className='input_container'>
-                        <label htmlFor='email'>Email</label>
-                        <input
-                            type='text'
-                            name='email'
-                            id='email'
-                            onChange={ e => setEmail(e.target.value) }
-                            value={ email }
-                            ref={ usernameFieldRef }>
-                        </input>
-                    </div>
-                    <div className='input_container'>
-                        <label htmlFor='password'>Password</label>
-                        <input
-                            type='password'
-                            name='password'
-                            id='password'
-                            onChange={ e => setPassword(e.target.value) }
-                            value={ password }>
-                        </input>
-                    </div>
+                    <Input
+                        type='email'
+                        id='email'
+                        changeState={{ value: email, setValue: setEmail }}>Email
+                    </Input>
+                    <Input
+                        type='password'
+                        id='password'
+                        changeState={{ value: password, setValue: setPassword }}>Password
+                    </Input>
                     <Button color='primary'>SIGN IN</Button>
                     <div className='collapse' onClick={ collapseFunction }>
                         <p>COLLAPSE</p>
