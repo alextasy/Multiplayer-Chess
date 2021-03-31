@@ -9,8 +9,8 @@ function Input({ children, id, changeState, type = 'text' }) {
                 type={ type }
                 name={ id }
                 id={ id }
-                onChange={ e => changeState.setValue(e.target.value) }
-                value={ changeState.value }>
+                onChange={ e => changeState[1](e.target.value) }
+                value={ changeState[0] }>
             </input>
         </div>
     )

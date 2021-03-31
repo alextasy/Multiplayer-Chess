@@ -62,12 +62,12 @@ function SideMenu({ history }) {
                     <Input
                         type='email'
                         id='email'
-                        changeState={{ value: email, setValue: setEmail }}>Email
+                        changeState={[ email, setEmail ]}>Email
                     </Input>
                     <Input
                         type='password'
                         id='password'
-                        changeState={{ value: password, setValue: setPassword }}>Password
+                        changeState={[ password, setPassword ]}>Password
                     </Input>
                     <Button color='primary'>SIGN IN</Button>
                     <div className='collapse' onClick={ collapseFunction }>
