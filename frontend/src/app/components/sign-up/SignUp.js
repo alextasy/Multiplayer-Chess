@@ -1,29 +1,29 @@
 import React, { useState } from 'react';
-import Input from '../../components/input/Input';
-import Board from '../../components/board/Board';
+import Button from '../button/Button';
+import Input from '../input/Input';
 import './SignUp.scss';
+import logo from '../../../assets/icons/logo.png'
+import HorizontalLine from '../horizontal-line/HorizontalLine';
 
-function SignUp() {
+function SignUp({ cancel }) {
     const [displayName, setDisplayName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState('');
-    const [quote, setQuote] = useState('');
-    const [bio, setBio] = useState('');
 
     return (
         <div className='SignUp'>
-            {/* TODO: USER AVATAR */}
-            <Board />
             <form autoComplete='off'>
-                <h1>SIGN UP</h1>
+                <img src={ logo } alt='Logo'/>
+                <HorizontalLine width='100%'/>
                 <Input id='display_name' changeState={[ displayName, setDisplayName ]}>Display name</Input>
                 <Input id='sign_up_email' changeState={[ email, setEmail ]}>Email</Input>
                 <Input id='sign_up_password' changeState={[ password, setPassword ]}>Password</Input>
                 <Input id='repeat_password' changeState={[ repeatPassword, setRepeatPassword ]}>Repeat password</Input>
-                <h3>PERSONALIZE</h3>
-                <Input id='quote' changeState={[ quote, setQuote ]}>Quote (optional)</Input>
-                <Input id='bio' changeState={[ bio, setBio ]}>Bio (optional)</Input>
+                <div className='controls'>
+                    <Button color='primary'>SUBMIT</Button>
+                    <Button color='background' click={ cancel }>CANCEL</Button>
+                </div>
             </form>
         </div>
     )

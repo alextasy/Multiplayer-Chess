@@ -3,10 +3,17 @@
 .HomePage{
     @include flex-center(row);
     justify-content: space-evenly;
-    height: calc(100vh - 100px);
+    height: calc(100vh);
+    overflow: hidden;
+    position: relative;
 
     .hero-section{
         width: 455px;
+        transform: translateY(0);
+        transition: transform 250ms ease-in;
+        &.hidden {
+            transform: translateY(-90vh);
+        }
 
         h1{
             font-size: 48px;
@@ -55,8 +62,13 @@
         }
     }
 
-    .HorizontalLine{
+    .SignUp {
         position: absolute;
-        bottom: 100px;
+        left: 110px;
+        transform: translateY(90vh);
+        transition: transform 250ms ease-in 400ms;
+        &.active {
+            transform: translate(0);
+        }
     }
 }

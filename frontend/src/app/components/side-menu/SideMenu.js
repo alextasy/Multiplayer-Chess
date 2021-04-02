@@ -22,13 +22,11 @@ function SideMenu({ history }) {
     signInState.setSingingIn = setSigningIn;
 
     useEffect(() => {
-        if (signingIn) {
-            setTimeout(() => {
-                document.getElementById('email').focus();
-                intervalRef.current = setInterval(() => collapseArrowRef.current.classList.toggle('active'), 750);
-            }, transitionDelay + transitionTime);
-        }
-        else clearInterval(intervalRef.current);
+        if (!signingIn) return clearInterval(intervalRef.current);
+        setTimeout(() => {
+            document.getElementById('email').focus();
+            intervalRef.current = setInterval(() => collapseArrowRef.current.classList.toggle('active'), 750);
+        }, transitionDelay + transitionTime);
     }, [signingIn]);
 
     const collapseFunction = () => {
