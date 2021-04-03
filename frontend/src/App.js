@@ -3,12 +3,14 @@ import { Route, Switch } from 'react-router-dom';
 import Home from './app/pages/home/Home';
 import Local from './app/pages/local/Local';
 import SideMenu from './app/components/side-menu/SideMenu';
-import GameContextProvider from './app/context/GameContext';
 import Multiplayer from './app/pages/multiplayer/Multiplayer';
+import GameContextProvider from './app/context/GameContext';
+import AppContextProvider from './app/context/AppContext';
 
 function App() {
   return (
     <GameContextProvider>
+    <AppContextProvider>
       <div className="App">
         <SideMenu />
         <div className='container'>
@@ -19,6 +21,7 @@ function App() {
         </Switch>
         </div>
       </div>
+    </AppContextProvider>
     </GameContextProvider>
   );
 }
