@@ -9,5 +9,18 @@
     .container{
         width: calc(100% - 320px);
         height: 100%;
+        .authOverlay {
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            width: calc(100% - 320px);
+            height: 100vh;
+            background-color: transparent;
+            transition: background-color 350ms ease-in 50ms;
+            &.active {
+                pointer-events: initial;
+                background-color: rgba(0, 0, 0, 0.6);
+            }
+        }
     }
 }
