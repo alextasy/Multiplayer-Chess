@@ -10,7 +10,7 @@ function SignUp() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState('');
-    const { isSigningIn, setIsSigningIn, isSigningUp, setIsSigningUp } = useContext(AppContext);
+    const { setIsSigningIn, isSigningUp, setIsSigningUp } = useContext(AppContext);
     const authRef = useRef();
     const transitionTime = 250;
     const transitionDelay = 400;
