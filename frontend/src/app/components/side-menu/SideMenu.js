@@ -5,8 +5,7 @@ import HorizontalLine from '../horizontal-line/HorizontalLine';
 import Button from '../button/Button';
 import { withRouter } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
-import SignIn from '../sign-in/SignIn';
-import SignUp from '../sign-up/SignUp';
+import Auth from '../auth/Auth';
 
 function SideMenu({ history }) {
     const { isSigningIn, isSigningUp, setIsSigningIn, setIsSigningUp } = useContext(AppContext);
@@ -26,8 +25,7 @@ function SideMenu({ history }) {
                 <Button click={() => setIsSigningIn(true) } color='primary'>SIGN IN</Button>
                 <p onClick={() => setIsSigningUp(true) }>Don’t have an account? Sign up!</p>
             </section>
-            { isSigningIn ? <SignIn /> : null }
-            { isSigningUp ? <SignUp /> : null }
+            { isSigningIn || isSigningUp ? <Auth/> : null }
             <p className='quote'>“Even a poor plan is better than no plan at all.”</p>
         </div>
     )
