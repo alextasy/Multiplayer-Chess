@@ -19,7 +19,7 @@ function ColapseArrow({ collapse, children }) {
     return (
         <div className='CollapseArrow' onClick={ collapseFunction }>
             <p>{ children }</p>
-            <p class='arrow' ref={ arrowRef }></p>
+            <p className='arrow' ref={ arrowRef }></p>
         </div>
     )
 }
