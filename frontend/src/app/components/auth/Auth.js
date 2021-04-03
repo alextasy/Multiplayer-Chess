@@ -16,10 +16,11 @@ function SignUp() {
     const transitionDelay = 400;
 
     useEffect(() => {
-        const input = authRef.current.firstChild;
+        // Gets the first input of the form - display name if signing up or email if signing in
+        const input = authRef.current.querySelector('input');
         authRef.current.style.transitionDelay = `${ transitionDelay }ms`;
         authRef.current.classList.toggle('active');
-        if (isSigningUp) setTimeout(() => input.focus(), transitionTime + transitionDelay);
+        setTimeout(() => input.focus(), transitionTime + transitionDelay);
     });
 
     const collapseFunction = () => {
