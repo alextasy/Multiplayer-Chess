@@ -9,14 +9,15 @@ function Input({ children, id, changeState, type = 'text', reference = null }) {
     }, [reference]);
 
     return (
-        <div className='Input' ref={ ref }>
+        <div className='Input'>
             <label htmlFor={ id }>{ children }</label>
             <input
                 type={ type }
                 name={ id }
                 id={ id }
                 onChange={ e => changeState[1](e.target.value) }
-                value={ changeState[0] }>
+                value={ changeState[0] }
+                ref={ ref }>
             </input>
         </div>
     )
