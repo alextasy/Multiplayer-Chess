@@ -1,5 +1,13 @@
 import express from 'express';
+const app = express();
 
- const app = express();
-
- app.listen(4000);
+// Parse requests
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+// Allow access
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', '*');
+    next();
+});
+app.listen(4000);
