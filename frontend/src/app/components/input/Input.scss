@@ -6,6 +6,7 @@
     flex-direction: column;
     margin: 20px 0;
     font-size: 14px;
+    position: relative;
     input {
         margin-top: 4px;
         padding: 0 10px;
@@ -14,10 +15,19 @@
         border: none;
         border-radius: 5px;
         background-color: $background;
-        font-size: 14px;
+        font-size: 16px;
         &:focus {
-            font-size: 16px;
             border: 1px solid $primary;
         }
+    }
+    &.invalid input {
+        border: 1px solid $danger;
+    }
+    .invalid-message {
+        position: absolute;
+        top: 3px;
+        right: 0;
+        color: $danger;
+        font-size: 12px;
     }
 }

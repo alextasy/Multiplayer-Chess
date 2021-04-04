@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import './Input.scss';
 
-function Input({ children, id, changeState, type = 'text', reference = null }) {
+function Input({ children, id, changeState, type = 'text', reference, invalidMsg }) {
     const ref = useRef();
     useEffect(() =>{
         if (!reference) return;
@@ -9,7 +9,7 @@ function Input({ children, id, changeState, type = 'text', reference = null }) {
     }, [reference]);
 
     return (
-        <div className='Input'>
+        <div className={`Input ${invalidMsg ? 'invalid' : '' }`}>
             <label htmlFor={ id }>{ children }</label>
             <input
                 type={ type }
@@ -19,6 +19,7 @@ function Input({ children, id, changeState, type = 'text', reference = null }) {
                 value={ changeState[0] }
                 ref={ ref }>
             </input>
+            <div className='invalid-message'>{ invalidMsg }</div>
         </div>
     )
 }
