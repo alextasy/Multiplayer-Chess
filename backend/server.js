@@ -10,4 +10,4 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Headers', '*');
     next();
 });
-app.listen(4000);
+app.listen(process.env.PORT || 4000);
