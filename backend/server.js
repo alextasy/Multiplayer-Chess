@@ -1,13 +1,11 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 
-// Parse requests
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-// Allow access
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', '*');
-    next();
-});
+app.use(cors()); // Take care of cors issues
+
+app.use('/', require('./routes/Auth'));
+
 app.listen(process.env.PORT || 4000);
