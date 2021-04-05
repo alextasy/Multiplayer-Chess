@@ -18,9 +18,9 @@ getCollection('users').then( collection => {
     });
 
     router.post('/login', async (req, res) => {
-        if (!req.user) return res.sendStatus(404);
+        if (!req.user) return res.status(404).send('* Email not registerd');
         const passwordsMatch = await bcrypt.compare(req.body.password, req.user.password);
-        if (!passwordsMatch) return res.sendStatus(400);
+        if (!passwordsMatch) return res.status(404).send('* Incorrect password');
 
         signToken(req.user, res);
     });
