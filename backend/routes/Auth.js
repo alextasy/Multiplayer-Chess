@@ -31,7 +31,11 @@ getCollection('users').then( collection => {
         if (!emailRegex.test(req.body.email)
             || !passwordRegex.test(req.body.password)
             || !displayNameRegex.test(req.body.displayName)) return res.sendStatus(400);
-        if (req.user) return res.sendStatus(403); // If user already exists
+        // If user already exists
+        if (req.user) res.status(400).json({
+            invalidEmail: req.user.email === req.body.email ? '* Email is already taken' : '',
+            invalidDisplayName: req.user.displayName === req.body.displayName ? '* Display name is already taken' : '',
+        });
 
         const password = await bcrypt.hash(req.body.password, 10);
 
