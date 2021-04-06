@@ -3,7 +3,7 @@ import './Button.scss';
 
 function Button({ color, children, click }) {
     return (
-        <div className={ `Button ${color}` } onClick={ click }>
+        <div className={ `Button ${color ? color : ''}` } onClick={ click }>
             { children }
         </div>
     )
