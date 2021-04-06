@@ -4,6 +4,7 @@ import Button from '../button/Button';
 import Input from '../input/Input';
 import { AppContext } from '../../context/AppContext';
 import CollapseArrow from '../collapse-arrow/CollapseArrow';
+import { fetchRequest } from '../../../helpers/FetchHelper';
 
 function SignUp() {
     const [form, setForm] = useState({
@@ -44,7 +45,12 @@ function SignUp() {
 
         if (isSigningUp) return validateSignUp(formCopy);
         if ( formCopy.invalidEmail || formCopy.invalidPassword) return setForm(formCopy);
-        // Sign In
+
+        fetchRequest('login', { email: form.email, password: form.password }).then(async res => {
+            const resObj = await res.json();
+            if (res.status === 404) return setForm({ ...form, ...resObj });
+            // TODO: save token in cache, change app state to be auth
+        });
     }
 
     function validateSignUp(formCopy) {
@@ -55,7 +61,16 @@ function SignUp() {
         if (!form.repeatPassword) formCopy.invalidRepeatPassword = '* Field is required';
         // Checks if any of the invalid message fields are truthy
         if (Object.keys(formCopy).some(field => formCopy[field] && field.startsWith('invalid'))) return setForm(formCopy);
-        // Sign Up
+
+        fetchRequest('register', {
+            displayName: form.displayName,
+            email: form.email,
+            password: form.password,
+        }).then(async res => {
+            const resObj = await res.json();
+            if (res.status === 404) return setForm({ ...form, ...resObj });
+            // TODO: save token in cache, change app state to be auth
+        });
     }
 
     const displayNameEl =
