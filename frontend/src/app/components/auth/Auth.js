@@ -70,7 +70,7 @@ function SignUp() {
         if (response.status === 404) return setForm({ ...form, ...resObj });
         localStorage.setItem('user', JSON.stringify(resObj));
         setIsAuth(true);
-        setDisplayName(resObj.displayName);
+        setDisplayName(resObj.user.displayName.toUpperCase());
         collapseFunction();
     }
 
