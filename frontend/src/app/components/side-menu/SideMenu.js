@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import './SideMenu.scss';
 import logo from '../../../assets/icons/logo.png';
 import HorizontalLine from '../horizontal-line/HorizontalLine';
@@ -8,22 +8,42 @@ import { AppContext } from '../../context/AppContext';
 import Auth from '../auth/Auth';
 
 function SideMenu({ history }) {
-    const { isSigningIn, isSigningUp, setIsSigningIn, setIsSigningUp } = useContext(AppContext);
+    const {
+        isSigningIn, isSigningUp,
+        setIsSigningIn, setIsSigningUp,
+        isAuth, setIsAuth,
+        displayName, setDisplayName,
+    } = useContext(AppContext);
+    const sectionRef = useRef(null);
+
+    function signOut() {
+        sectionRef.current.classList.toggle('hidden');
+        setTimeout(() => {
+            sectionRef.current.classList.toggle('hidden');
+            localStorage.clear();
+            setIsAuth(false);
+            setDisplayName('');
+        }, 400);
+    }
+
+    const signUpParagraph = <p onClick={() => setIsSigningUp(true) }>Don’t have an account? Sign up!</p>;
+    const signOutParagraph = <p onClick={ signOut }>Leave account? Sign out!</p>;
 
     return (
         <div className='SideMenu'>
             <img src={ logo } alt='logo' onClick={ ()=> history.push('/') } style={{ cursor: 'pointer' }}/>
             <HorizontalLine />
-            <section className={ isSigningIn || isSigningUp ? 'hidden' : ''}>
-                <h3>PLAY AS GUEST</h3>
+            <section className={ isSigningIn || isSigningUp ? 'hidden' : ''} ref={ sectionRef }>
+                <h3>PLAY AS { isAuth ? displayName : 'GUEST' }</h3>
                 <Button click={() => history.push('/local') }>LOCAL MULTIPLAYER</Button>
                 <Button click={() => history.push('/multiplayer') }>ONLINE MULTIPLAYER</Button>
                 <HorizontalLine />
-                <h3>SIGN IN TO USE</h3>
+                <h3>{ isAuth ? 'PERSONAL INFO' : 'SIGN IN TO USE' }</h3>
                 <Button click={() => history.push('/history') }>MATCH HISTORY</Button>
                 <Button click={() => history.push('/profile') }>MY PROFILE</Button>
-                <Button click={() => setIsSigningIn(true) } color='primary'>SIGN IN</Button>
-                <p onClick={() => setIsSigningUp(true) }>Don’t have an account? Sign up!</p>
+                { isAuth ? null : <Button click={() => setIsSigningIn(true) } color='primary'>SIGN IN</Button> }
+                { isAuth ? <Button click={() => history.push('/multiplayer') } color='primary' >PLAY NOW</Button> : null }
+                { isAuth ? signOutParagraph : signUpParagraph }
             </section>
             { isSigningIn || isSigningUp ? <Auth/> : null }
             <p className='quote'>“Even a poor plan is better than no plan at all.”</p>
