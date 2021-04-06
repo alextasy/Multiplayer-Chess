@@ -13,7 +13,7 @@ function SignUp() {
         password: '', invalidPassword: '',
         repeatPassword: '', invalidRepeatPassword: '',
     });
-    const { isSigningIn, setIsSigningIn, isSigningUp, setIsSigningUp } = useContext(AppContext);
+    const { isSigningIn, setIsSigningIn, isSigningUp, setIsSigningUp,  setIsAuth, setDisplayName } = useContext(AppContext);
     const authRef = useRef();
     const transitionTime = 250;
     const transitionDelay = 400;
@@ -46,11 +46,7 @@ function SignUp() {
         if (isSigningUp) return validateSignUp(formCopy);
         if ( formCopy.invalidEmail || formCopy.invalidPassword) return setForm(formCopy);
 
-        fetchRequest('login', { email: form.email, password: form.password }).then(async res => {
-            const resObj = await res.json();
-            if (res.status === 404) return setForm({ ...form, ...resObj });
-            // TODO: save token in cache, change app state to be auth
-        });
+        fetchRequest('login', { email: form.email, password: form.password }).then(res => handleResponse(res));
     }
 
     function validateSignUp(formCopy) {
@@ -66,11 +62,16 @@ function SignUp() {
             displayName: form.displayName,
             email: form.email,
             password: form.password,
-        }).then(async res => {
-            const resObj = await res.json();
-            if (res.status === 404) return setForm({ ...form, ...resObj });
-            // TODO: save token in cache, change app state to be auth
-        });
+        }).then(res => handleResponse(res));
+    }
+
+    async function handleResponse(response) {
+        const resObj = await response.json();
+        if (response.status === 404) return setForm({ ...form, ...resObj });
+        localStorage.setItem('user', JSON.stringify(resObj));
+        setIsAuth(true);
+        setDisplayName(resObj.displayName);
+        collapseFunction();
     }
 
     const displayNameEl =
