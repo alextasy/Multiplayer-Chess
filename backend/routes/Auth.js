@@ -53,7 +53,8 @@ function signToken(user, res) {
     delete user.password;
     jwt.sign({ user }, process.env.JWT_KEY, (err, token) => {
         if (err) return res.sendStatus(500);
-        res.json({ user, token, expiresIn: '1h' });
+        // Sends back the user, token and issued at in seconds alongside expires in, in seconds
+        res.json({ user, token, expiresIn: 3600, iat: Math.floor(new Date().getTime() / 1000) });
     });
 }
 
