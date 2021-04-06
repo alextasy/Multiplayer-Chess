@@ -27,7 +27,6 @@ getCollection('users').then( collection => {
 
     router.post('/register', async (req, res) => {
         // Meaning they altered the fronend code to pass the validation
-        console.log(req.body );
         if (!emailRegex.test(req.body.email)
             || !passwordRegex.test(req.body.password)
             || !displayNameRegex.test(req.body.displayName)) return res.sendStatus(400);
