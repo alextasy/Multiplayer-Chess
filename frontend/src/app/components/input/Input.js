@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import './Input.scss';
 
-function Input({ children, id, changeState, type = 'text', reference, invalidMsg }) {
+function Input({ children, id, changeState, type = 'text', reference, invalidMsg, placeholder }) {
     const ref = useRef();
     useEffect(() =>{
         if (!reference) return;
@@ -17,6 +17,7 @@ function Input({ children, id, changeState, type = 'text', reference, invalidMsg
                 id={ id }
                 onChange={ e => changeState[1](e.target.value) }
                 value={ changeState[0] }
+                placeholder={ placeholder }
                 ref={ ref }>
             </input>
             <div className='invalid-message'>{ invalidMsg }</div>

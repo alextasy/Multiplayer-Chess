@@ -19,6 +19,10 @@
         &:focus {
             border: 1px solid $primary;
         }
+        &::placeholder {
+            color: $highlight;
+            font-weight: bold;
+        }
     }
     &.invalid input {
         border: 1px solid $danger;
