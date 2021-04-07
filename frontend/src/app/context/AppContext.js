@@ -7,21 +7,21 @@ export const AppContext = React.createContext({
     setIsSigningUp: () => {},
     isAuth: false,
     setIsAuth: () => {},
-    displayName: '',
-    setDisplayName: () => {},
+    user: {},
+    setUser: () => {},
 });
 
 const AppContextProvider = (props)=>{
     const [signingIn, setSingingIn] = useState(false);
     const [signingUp, setSigningUp] = useState(false);
     const [auth, setAuth] = useState(false);
-    const [name, setName] = useState('');
+    const [userState, setUserState] = useState('');
     return(
         <AppContext.Provider value={{
             isSigningIn: signingIn, setIsSigningIn: setSingingIn,
             isSigningUp: signingUp, setIsSigningUp: setSigningUp,
             isAuth: auth, setIsAuth: setAuth,
-            displayName: name, setDisplayName: setName,
+            user: userState, setUser: setUserState,
          }}>
             {props.children}
         </AppContext.Provider>

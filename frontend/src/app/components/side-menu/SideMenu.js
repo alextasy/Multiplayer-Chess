@@ -12,7 +12,7 @@ function SideMenu({ history }) {
         isSigningIn, isSigningUp,
         setIsSigningIn, setIsSigningUp,
         isAuth, setIsAuth,
-        displayName, setDisplayName,
+        user, setUser,
     } = useContext(AppContext);
     const sectionRef = useRef(null);
 
@@ -22,7 +22,7 @@ function SideMenu({ history }) {
             sectionRef.current.classList.toggle('hidden');
             localStorage.clear();
             setIsAuth(false);
-            setDisplayName('');
+            setUser(null);
         }, 400);
     }
 
@@ -34,7 +34,7 @@ function SideMenu({ history }) {
             <img src={ logo } alt='logo' onClick={ ()=> history.push('/') } style={{ cursor: 'pointer' }}/>
             <HorizontalLine />
             <section className={ isSigningIn || isSigningUp ? 'hidden' : ''} ref={ sectionRef }>
-                <h3>PLAY AS { isAuth ? displayName : 'GUEST' }</h3>
+                <h3>PLAY AS { isAuth ? user.displayName.toUpperCase() : 'GUEST' }</h3>
                 <Button click={() => history.push('/local') }>LOCAL MULTIPLAYER</Button>
                 <Button click={() => history.push('/multiplayer') }>ONLINE MULTIPLAYER</Button>
                 <HorizontalLine />

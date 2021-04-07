@@ -13,7 +13,7 @@ function SignUp() {
         password: '', invalidPassword: '',
         repeatPassword: '', invalidRepeatPassword: '',
     });
-    const { isSigningIn, setIsSigningIn, isSigningUp, setIsSigningUp,  setIsAuth, setDisplayName } = useContext(AppContext);
+    const { isSigningIn, setIsSigningIn, isSigningUp, setIsSigningUp,  setIsAuth, setUser } = useContext(AppContext);
     const authRef = useRef();
     const transitionTime = 250;
     const transitionDelay = 400;
@@ -68,9 +68,9 @@ function SignUp() {
     async function handleResponse(response) {
         const resObj = await response.json();
         if (response.status === 404) return setForm({ ...form, ...resObj });
-        localStorage.setItem('user', JSON.stringify(resObj));
+        localStorage.setItem('authInfo', JSON.stringify(resObj));
+        setUser(resObj);
         setIsAuth(true);
-        setDisplayName(resObj.user.displayName.toUpperCase());
         collapseFunction();
     }
 
