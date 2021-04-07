@@ -1,40 +1,8 @@
 @import '../../../global';
 
 .MovesHistory {
-    width: 85%;
-    background-color: $background;
-    height: 370px;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-
-    h3 {
-        font-size: 14px;
-        margin: 25px;
-    }
-
+    @include assideItem;
     section {
-        overflow-y: auto;
-        padding: 0 25px 25px;
-
-        &::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        &::-webkit-scrollbar-track {
-            background: $highlight;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background: $primaryDark;
-            border-radius: 20px;
-        }
-
-        &::-webkit-scrollbar-thumb:hover {
-            background: $primary;
-        }
-
         div {
             display: flex;
             align-items: flex-end;
