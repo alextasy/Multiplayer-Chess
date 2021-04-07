@@ -8,33 +8,29 @@
 
     .hero-section{
         width: 455px;
-        h1{
+        h1 {
             font-size: 48px;
             margin-bottom: 5px;
         }
 
-        h2{
+        h2 {
             font-size: 22px;
             font-weight: normal;
             margin-bottom: 30px;
         }
 
-        p{
+        p {
             font-size: 18px;
             line-height: 27px;
             margin-bottom: 20px;
 
-            b{
+            b {
                 color: $primary;
                 cursor: pointer;
             }
         }
 
-        p + p{
-            margin-bottom: 40px;
-        }
-
-        div{
+        div {
             display: flex;
 
             &:first-child.Button{
