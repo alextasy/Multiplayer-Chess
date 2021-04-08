@@ -1,0 +1,50 @@
+@import '../../../global';
+
+.Radio {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 16px;
+    .radio_circle {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border: 2px solid $highlight;
+        border-radius: 5px;
+        pointer-events: none;
+        transition: all 250ms ease-out;
+    }
+
+    &.active .radio_circle {
+        border: 2px solid $primary;
+    }
+
+    .radio_circle::after {
+        content: '';
+        position: absolute;
+        opacity: 0;
+        left: 2px;
+        top: 2px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: $primary;
+        transition: all 150ms ease-out;
+    }
+
+    &.active .radio_circle::after {
+        opacity: 1;
+    }
+
+    input {
+        width: 16px;
+        height: 16px;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    label {
+        margin-left: 5px;
+        font-size: 14px;
+    }
+}
