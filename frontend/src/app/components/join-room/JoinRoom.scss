@@ -16,6 +16,10 @@
     .search_container {
         display: flex;
         align-items: center;
+        width: 100%;
+        .Input {
+            width: calc(100% - 95px);
+        }
     }
 
     .properties {
