@@ -10,7 +10,7 @@ function Input({ children, id, changeState, type = 'text', reference, invalidMsg
 
     return (
         <div className={`Input ${invalidMsg ? 'invalid' : '' }`}>
-            <label htmlFor={ id }>{ children }</label>
+            { children ? <label htmlFor={ id }>{ children }</label> : null }
             <input
                 type={ type }
                 name={ id }
