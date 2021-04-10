@@ -4,11 +4,13 @@ import { socket } from '../../../helpers/Socket';
 import Input from '../input/Input';
 import Button from '../button/Button';
 import { AppContext } from '../../context/AppContext';
+import { GameContext } from '../../context/GameContext';
 
 function Chat() {
     const [inputValue, setInputValue] = useState('');
     const [allMessages, setAllMessages] = useState([]);
     const { user } = useContext(AppContext);
+    const { roomId } = useContext(GameContext);
 
     const messageComponents = allMessages.map((msg, index) => {
         const fromMe = user.displayName === msg.sender;
@@ -28,7 +30,7 @@ function Chat() {
 
     function sendMessage() {
         if (!inputValue) return;
-        socket.emit('message', { sender: user.displayName, message: inputValue });
+        socket.emit('message', { sender: user.displayName, message: inputValue, roomId });
     }
 
     return (
