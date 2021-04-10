@@ -5,7 +5,7 @@ import Radio from '../radio/Radio';
 import Checkbox from '../checkbox/Checkbox';
 import './CreateRoom.scss';
 
-function CreateRoom() {
+function CreateRoom({ createFunc }) {
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [blitz, setBlitz] = useState(10);
@@ -32,7 +32,7 @@ function CreateRoom() {
             <div className='last'>
                 <Checkbox click={ ()=> setStartingAsBlack(!startingAsBlack) }/>
                 <label>START AS BLACK</label>
-                <Button color='primary'>CREATE ROOM</Button>
+                <Button color='primary' click={ () => createFunc( { name, password, blitz, startingAsBlack }) }>CREATE ROOM</Button>
             </div>
         </div>
     )
