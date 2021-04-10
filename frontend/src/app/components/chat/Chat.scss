@@ -1,0 +1,78 @@
+@import '../../../global';
+
+.Chat {
+    @include assideItem;
+    padding: 25px;
+    height: 450px;
+
+    h3 {
+        margin: 0 0 25px;
+    }
+
+    section {
+        height: 100%;
+        padding: 0 0 25px;
+    }
+
+    .input_section {
+        display: flex;
+        width: 100%;
+        height: 30px;
+        align-items: center;
+
+        .Input {
+            width: calc(100% - 80px);
+            input {
+                margin: 0;
+            }
+        }
+
+        .Button {
+            width: 65px;
+            margin-left: 15px;
+            height: 30px;
+            border: none;
+            font-weight: normal;
+            font-size: 16px;
+            border-radius: 10px;
+        }
+    }
+
+    .message {
+        max-width: 70%;
+        margin-left: auto;
+        label {
+            margin-bottom: 5px;
+            display: block;
+        }
+        p {
+            background-color: $primary;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        &.opponent {
+            margin-left: 0;
+            p {
+                background-color: $highlight;
+            }
+
+            & + .message.opponent {
+                margin-top: 10px;
+            }
+        }
+
+        // OPPONENT MESSAGES HAVE MORE MARGIN
+
+        & + .message.opponent {
+            margin-top: 25px;
+        }
+
+        // MESSAGES FROM THE SAME PLAYER HAVE LESS MARGIN
+
+        & + .message {
+            margin-top: 10px;
+        }
+    }
+
+}
