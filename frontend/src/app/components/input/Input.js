@@ -18,7 +18,8 @@ function Input({ children, id, changeState, type = 'text', reference, invalidMsg
                 onChange={ e => changeState[1](e.target.value) }
                 value={ changeState[0] }
                 placeholder={ placeholder }
-                ref={ ref }>
+                ref={ ref }
+                autoComplete='off'>
             </input>
             <div className='invalid-message'>{ invalidMsg }</div>
         </div>
