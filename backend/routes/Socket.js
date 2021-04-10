@@ -1,6 +1,6 @@
 
 module.exports = io => {
-    const rooms = [];
+    let rooms = [];
 
     io.on('connection', socket => {
         socket.emit('updateRooms', rooms);
@@ -9,6 +9,12 @@ module.exports = io => {
             rooms.push({ ...options, id: socket.id });
             socket.join(socket.id);
             socket.broadcast.emit('updateRooms', rooms);
+        })
+
+        socket.on('joinRoom', roomId => {
+            socket.join(roomId);
+            rooms = rooms.filter(room => room.id !== roomId);
+            io.emit('updateRooms', rooms);
         })
     });
 }

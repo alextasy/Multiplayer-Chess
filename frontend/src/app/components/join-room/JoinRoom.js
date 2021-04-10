@@ -6,7 +6,7 @@ import padlock from '../../../assets/icons/padlock.png';
 import padlockLocked from '../../../assets/icons/padlock_locked.png';
 import padlockUnlocked from '../../../assets/icons/padlock_unlocked.png';
 
-function JoinRoom({ rooms }) {
+function JoinRoom({ rooms, joinFunc }) {
     const [searchText, setSearchText] = useState('');
     const roomComponents = rooms.map( room =>
         <div className='room' key={ room.id }>
@@ -17,7 +17,7 @@ function JoinRoom({ rooms }) {
                     src={ room.password ? padlockLocked : padlockUnlocked }
                     alt={ `${room.password ? 'locked' : 'unlocked'}padlock` }/>
             </div>
-            <Button color='primary'>JOIN</Button>
+            <Button color='primary' click={ ()=> joinFunc(room.id) }>JOIN</Button>
         </div>
     );
 
