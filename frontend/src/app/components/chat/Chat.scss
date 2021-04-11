@@ -2,25 +2,27 @@
 
 .Chat {
     @include assideItem;
-    padding: 25px;
     height: 450px;
 
     h3 {
-        margin: 0 0 25px;
+        margin: 25px;
     }
 
     section {
-        height: 100%;
-        padding: 0 0 25px;
+        height: calc(100% - 120px);
+        padding: 25px 25px 0;
+        margin-bottom: 25px;
     }
 
     .input_section {
+        padding: 0 25px 25px;
         display: flex;
         width: 100%;
-        height: 30px;
+        height: 55px;
         align-items: center;
 
         .Input {
+            margin: 0;
             width: calc(100% - 80px);
             input {
                 margin: 0;
@@ -42,37 +44,44 @@
         max-width: 70%;
         margin-left: auto;
         label {
-            margin-bottom: 5px;
-            display: block;
+            top: -20px;
+            left: 0;
+            position: absolute;
+            font-size: 14px;
+            word-break: initial;
         }
         p {
+            position: relative;
+            margin-top: 20px;
             background-color: $primary;
-            padding: 10px;
+            padding: 6px 10px;
             border-radius: 10px;
+            width: fit-content;
+            margin-left: auto;
+            word-break: break-word;
         }
 
         &.opponent {
             margin-left: 0;
             p {
                 background-color: $highlight;
+                margin-left: 0;
             }
-
-            & + .message.opponent {
-                margin-top: 10px;
-            }
-        }
-
-        // OPPONENT MESSAGES HAVE MORE MARGIN
-
-        & + .message.opponent {
-            margin-top: 25px;
-        }
-
-        // MESSAGES FROM THE SAME PLAYER HAVE LESS MARGIN
-
-        & + .message {
-            margin-top: 10px;
         }
     }
+    // OPPONENT MESSAGES HAVE MORE MARGIN
+    // MESSAGES FROM THE SAME PLAYER HAVE LESS MARGIN
+
+    .you + .opponent, .opponent + .you {
+        margin-top: 35px;
+    }
+
+    .you + .you, .opponent + .opponent {
+        margin-top: 6px;
+        p {
+            margin-top: 0;
+        }
+    }
+
 
 }
