@@ -3,7 +3,8 @@ module.exports = io => {
     let rooms = [];
 
     io.on('connection', socket => {
-        socket.emit('updateRooms', rooms);
+
+        socket.on('requestRooms', () => socket.emit('updateRooms', rooms));
 
         socket.on('createRoom', options => {
             rooms.push({ ...options, id: socket.id });

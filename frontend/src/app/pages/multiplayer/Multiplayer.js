@@ -15,6 +15,7 @@ function Multiplayer() {
     const { setRoomId } = useContext(GameContext);
 
     useEffect(()=> {
+        socket.emit('requestRooms');
         socket.on('updateRooms', rooms => setRooms(rooms));
         socket.on('roomJoined', roomId => {
             setRoomId(roomId);
