@@ -16,6 +16,7 @@ module.exports = io => {
         socket.on('joinRoom', roomId => {
             socket.join(roomId);
             socket.emit('roomJoined', roomId);
+            io.emit('gameStart');
             rooms = rooms.filter(room => room.id !== roomId);
             io.emit('updateRooms', rooms);
         })
