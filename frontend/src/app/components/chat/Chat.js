@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import './Chat.scss';
 import { socket } from '../../../helpers/Socket';
 import Input from '../input/Input';
@@ -11,37 +11,40 @@ function Chat() {
     const [allMessages, setAllMessages] = useState([]);
     const { user } = useContext(AppContext);
     const { roomId } = useContext(GameContext);
+    const sectionRef = useRef();
 
     const messageComponents = allMessages.map((msg, index) => {
         const fromMe = user.displayName === msg.sender;
-        const showLabel = index > 0 && allMessages[index - 1].sender === msg.sender;
+        const hideLabel = index > 0 && allMessages[index - 1].sender === msg.sender;
 
         return (
-            <div className={ `message ${fromMe ? '' : ' opponent'}` }>
-                { showLabel ? <label>{ fromMe ? 'You:' : `${msg.sender}:` }</label> : null }
-                <p>{msg.message}</p>
+            <div className={ `message ${fromMe ? 'you' : ' opponent'}` } key={ index }>
+                <p>
+                    { hideLabel ? null : <label>{ fromMe ? 'You:' : `${msg.sender}:` }</label> }
+                    {msg.message}
+                </p>
             </div>
         )
     });
 
-    useEffect(() => {
-        socket.on('message', message => setAllMessages([...allMessages, message]));
-    }, []);
+    useEffect(() => socket.on('message', message => setAllMessages(currentMsg => [...currentMsg, message])), []);
+    useEffect(()=> sectionRef.current.scrollTop = sectionRef.current.scrollHeight, [allMessages]);
 
     function sendMessage() {
         if (!inputValue) return;
         socket.emit('message', { sender: user.displayName, message: inputValue, roomId });
+        setInputValue('');
     }
 
     return (
         <div className='Chat'>
             <h3>CHAT WITH OPPONENT ...</h3>
-            <section>
+            <section ref={ sectionRef }>
                 { messageComponents }
             </section>
             <div className='input_section'>
                 <Input id='message_input' placeholder='Aa' changeState={[ inputValue, setInputValue ]} />
-                <Button color='primary'>SEND</Button>
+                <Button color='primary' click={ sendMessage }>SEND</Button>
             </div>
         </div>
     )
