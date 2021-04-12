@@ -1,21 +1,42 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './Board.scss';
 import { withRouter } from 'react-router-dom';
-import { initialSetUp, setFigures, rankElements, promotionModal, imageSources } from './boardHelper';
+import { initialSetUp, setFigures, rankElements, promotionModal, imageSources, handleCastling } from './boardHelper';
 import { GameContext } from '../../context/GameContext';
+import { socket } from '../../../helpers/Socket';
 
-function Board({ playingAsBlack, isMyTurn = true, playable = true, location, autoRotate }) {
+function Board({ playingAsBlack, playable = true, location, autoRotate }) {
     const [gameBoard, setGameBoard] = useState(initialSetUp());
-    const [selectedFigure, setSelectedFigure] = useState(null);
-    const [currentTurn, setCurrentTurn] = useState('white');
-    const [availableMoves, setAvailableMoves] = useState (null);
-    const isLocal = useRef(location.pathname === '/local');
     const [blackFigures, setBlackFigures] = useState(setFigures('black'));
     const [whiteFigures, setWhiteFigures] = useState(setFigures('white'));
+    const [selectedFigure, setSelectedFigure] = useState(null);
+    const [availableMoves, setAvailableMoves] = useState (null);
+
+    const [currentTurn, setCurrentTurn] = useState('white');
     const [checkedPlayer, setCheckedPlayer] = useState(null);
     const [promoModalState, setPromoModalState] = useState(null);
+
     const [playerIsBlack, setPlayerIsBlack] = useState(playingAsBlack);
-    const context = useContext(GameContext);
+    const [isLocal] = useState(location.pathname === '/local');
+    const { roomId, setMovesHistory } = useContext(GameContext);
+    const [receivedMove, setReceivedMove] = useState(null);
+
+    useEffect(()=> {
+        socket.on('move', ({ figIndex, nextSquareIndex }) => {
+            const figToMove = gameBoard[figIndex].occupiedBy;
+            const enemyFigures = currentTurn === 'black' ? blackFigures : whiteFigures;
+            setSelectedFigure(figToMove);
+            setAvailableMoves(figToMove.getFigureLegalMoves(gameBoard, enemyFigures));
+            setReceivedMove(gameBoard[nextSquareIndex]);
+        })
+    }, []);
+
+    useEffect(()=> {
+        if (!receivedMove) return;
+        moveFigure(receivedMove, false);
+        setCurrentTurn(currentTurn === 'black' ? 'white' : 'black');
+        setReceivedMove(null)
+    }, [receivedMove]);
 
     // Rotate the board when props get updated
     useEffect(() => {
@@ -38,15 +59,16 @@ function Board({ playingAsBlack, isMyTurn = true, playable = true, location, aut
     }, [currentTurn]);
 
     function selectFigure(square) {
-        const enemyFigures = currentTurn === 'black' ? whiteFigures : blackFigures;
+        const isMyTurn = isLocal || (playingAsBlack && currentTurn === 'black') || (!playingAsBlack && currentTurn === 'white');
         if (square.occupiedBy?.color !== currentTurn || !isMyTurn) return;
+        const enemyFigures = currentTurn === 'black' ? whiteFigures : blackFigures;
         toggleSelectedStyles(square.occupiedBy);
         setSelectedFigure(square.occupiedBy);
         setAvailableMoves(square.occupiedBy.getFigureLegalMoves(gameBoard, enemyFigures));
     }
 
-    async function moveFigure(square) {
-        toggleSelectedStyles(selectedFigure);
+    async function moveFigure(square, switchAfterMove = true) {
+        if (!receivedMove) toggleSelectedStyles(selectedFigure);
 
         if (square.position !== selectedFigure.position && square.occupiedBy?.color === currentTurn) {
             selectFigure(square);
@@ -60,7 +82,7 @@ function Board({ playingAsBlack, isMyTurn = true, playable = true, location, aut
         document.querySelector('.checked')?.classList.remove('checked');
         const gameBoardCopy = [...gameBoard];
         if (square.occupiedBy) takeFigure(square.occupiedBy);
-        if (selectedFigure.type === 'king') handleCastling(gameBoardCopy, square.position);
+        if (selectedFigure.type === 'king' && !selectedFigure.lastPosition) handleCastling(gameBoardCopy, square.position, currentTurn);
         gameBoardCopy[selectedFigure.position -1].occupiedBy = null;
         selectedFigure.lastPosition = selectedFigure.position;
         selectedFigure.position = square.position;
@@ -72,14 +94,14 @@ function Board({ playingAsBlack, isMyTurn = true, playable = true, location, aut
             setCheckedPlayer(true);
         }
         updateMovesHistory(square.name, selectedFigure.type);
+        if (switchAfterMove) switchTurn(square);
         setSelectedFigure(null);
         setAvailableMoves(null);
         setGameBoard(gameBoardCopy);
-        switchTurn();
     }
 
     function updateMovesHistory(squareName, figureType) {
-        context.setMovesHistory(currentMoves => {
+        setMovesHistory(currentMoves => {
             const move = {
                 squareName: squareName,
                 figureType: figureType,
@@ -92,18 +114,6 @@ function Board({ playingAsBlack, isMyTurn = true, playable = true, location, aut
     function takeFigure(figureToRemove) {
         const enemyFigures = currentTurn === 'white' ? setBlackFigures : setWhiteFigures;
         enemyFigures(figures => figures.filter(fig => fig !== figureToRemove));
-    }
-
-    function handleCastling(board, kingNextPos) {
-        const castlingPositions = currentTurn === 'black' ? [3, 7] : [59, 63];
-        if (selectedFigure.lastPosition || !castlingPositions.includes(kingNextPos)) return;
-        const queenSide = kingNextPos === castlingPositions[0];
-        const currentRookSquare = queenSide ? board[kingNextPos - 3] : board[kingNextPos];
-        const futureRookSquare = queenSide ? board[kingNextPos] : board[kingNextPos - 2];
-
-        futureRookSquare.occupiedBy = currentRookSquare.occupiedBy;
-        futureRookSquare.occupiedBy.position = futureRookSquare.position;
-        currentRookSquare.occupiedBy = null;
     }
 
     function handlePawnPromotion() {
@@ -132,12 +142,12 @@ function Board({ playingAsBlack, isMyTurn = true, playable = true, location, aut
         });
     }
 
-    function switchTurn() {
-        if (isLocal) {
-            setCurrentTurn(currentTurn === 'white' ? 'black' : 'white');
-            if (autoRotate) setPlayerIsBlack(!playerIsBlack);
-            return;
-        }
+    function switchTurn(nextSquare) {
+        setCurrentTurn(currentTurn === 'white' ? 'black' : 'white');
+        if (autoRotate) setPlayerIsBlack(!playerIsBlack);
+        if (isLocal) return;
+
+        socket.emit('move', { figIndex: selectedFigure.lastPosition - 1, nextSquareIndex: nextSquare.position - 1, roomId });
     }
 
     return (

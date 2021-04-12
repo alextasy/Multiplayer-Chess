@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = io => {
     let rooms = [];
@@ -7,9 +8,10 @@ module.exports = io => {
         socket.on('requestRooms', () => socket.emit('updateRooms', rooms));
 
         socket.on('createRoom', options => {
-            rooms.push({ ...options, id: socket.id });
-            socket.join(socket.id);
-            socket.emit('roomJoined', socket.id);
+            const roomId = uuidv4();
+            rooms.push({ ...options, id: roomId });
+            socket.join(roomId);
+            socket.emit('roomJoined', roomId);
             socket.broadcast.emit('updateRooms', rooms);
         })
 
@@ -23,6 +25,10 @@ module.exports = io => {
 
         socket.on('message', ({ message, sender, roomId }) => {
             io.to(roomId).emit('message', { message, sender });
+        })
+
+        socket.on('move', ({ figIndex, nextSquareIndex, roomId }) => {
+            socket.broadcast.to(roomId).emit('move', { figIndex, nextSquareIndex });
         })
     });
 }
