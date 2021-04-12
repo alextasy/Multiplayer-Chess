@@ -35,7 +35,7 @@ function Board({ playingAsBlack, playable = true, location, autoRotate }) {
         if (!receivedMove) return;
         moveFigure(receivedMove, false);
         setCurrentTurn(currentTurn === 'black' ? 'white' : 'black');
-        setReceivedMove(null)
+        setReceivedMove(null);
     }, [receivedMove]);
 
     // Rotate the board when props get updated
