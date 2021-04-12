@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import './Board.scss';
 import { withRouter } from 'react-router-dom';
-import { initialSetUp, setFigures, rankElements, promotionModal, imageSources, handleCastling } from './boardHelper';
+import { initialSetUp, setFigures, rankElements, promotionModal, handleCastling, handlePawnPromotion } from './boardHelper';
 import { GameContext } from '../../context/GameContext';
 import { socket } from '../../../helpers/Socket';
 
@@ -45,13 +45,16 @@ function Board({ playingAsBlack, playable = true, location, autoRotate }) {
         if (!checkedPlayer) return;
 
         let hasLegalMoves = false;
+        const figures = currentTurn === 'black' ? blackFigures : whiteFigures;
         const enemyFigures = currentTurn === 'black' ? whiteFigures : blackFigures;
-        const checkAllLegalMoves = figures => {
-            figures.forEach(fig => {
-                if (fig.getFigureLegalMoves(gameBoard, enemyFigures).length > 0) hasLegalMoves = true;
-            });
-        }
-        currentTurn === 'black' ? checkAllLegalMoves(blackFigures) : checkAllLegalMoves(whiteFigures);
+
+        for (const fig of figures) {
+            if (fig.getFigureLegalMoves(gameBoard, enemyFigures).length) {
+                hasLegalMoves = true;
+                break;
+            }
+        };
+
         if (!hasLegalMoves) console.log('GG');
         else setCheckedPlayer(false);
     }, [currentTurn]);
@@ -59,52 +62,53 @@ function Board({ playingAsBlack, playable = true, location, autoRotate }) {
     function selectFigure(square) {
         const isMyTurn = isLocal || (playingAsBlack && currentTurn === 'black') || (!playingAsBlack && currentTurn === 'white');
         if (square.occupiedBy?.color !== currentTurn || !isMyTurn) return;
+
         const enemyFigures = currentTurn === 'black' ? whiteFigures : blackFigures;
-        toggleSelectedStyles(square.occupiedBy);
+        const legalMoves = square.occupiedBy.getFigureLegalMoves(gameBoard, enemyFigures);
+        toggleSelectedStyles(square.occupiedBy, legalMoves);
         setSelectedFigure(square.occupiedBy);
-        setAvailableMoves(square.occupiedBy.getFigureLegalMoves(gameBoard, enemyFigures));
+        setAvailableMoves(legalMoves);
     }
 
     async function moveFigure(square) {
-        if (!receivedMove) toggleSelectedStyles(selectedFigure);
+        if (!receivedMove) toggleSelectedStyles(selectedFigure, availableMoves);
 
         if (square.position !== selectedFigure.position && square.occupiedBy?.color === currentTurn) {
             selectFigure(square);
             return;
         }
+
         if (square.position === selectedFigure.position || !availableMoves.includes(square.position)) {
             setSelectedFigure(null);
             setAvailableMoves(null);
             return;
         }
+
         document.querySelector('.checked')?.classList.remove('checked');
         const gameBoardCopy = [...gameBoard];
+
         if (square.occupiedBy) takeFigure(square.occupiedBy);
         if (selectedFigure.type === 'king' && !selectedFigure.lastPosition) handleCastling(gameBoardCopy, square.position, currentTurn);
+
         gameBoardCopy[selectedFigure.position -1].occupiedBy = null;
         selectedFigure.lastPosition = selectedFigure.position;
         selectedFigure.position = square.position;
         gameBoardCopy[square.position -1].occupiedBy = selectedFigure;
-        if (selectedFigure.canPromote()) await handlePawnPromotion();
-        const checkedKing = selectedFigure.seeIfCheck(gameBoardCopy, square.occupiedBy);
-        if (checkedKing) {
-            document.getElementById(checkedKing).classList.add('checked');
-            setCheckedPlayer(true);
-        }
+
+        if (selectedFigure.canPromote()) await handlePawnPromotion(selectedFigure, currentTurn, setPromoModalState);
+        if (selectedFigure.seeIfCheck(gameBoardCopy)) setCheckedPlayer(true);
+
         updateMovesHistory(square.name, selectedFigure.type);
-        if (!receivedMove) switchTurn(square);
         setSelectedFigure(null);
         setAvailableMoves(null);
         setGameBoard(gameBoardCopy);
+
+        if (!receivedMove) switchTurn(selectedFigure.lastPosition - 1, square.position - 1);
     }
 
     function updateMovesHistory(squareName, figureType) {
         setMovesHistory(currentMoves => {
-            const move = {
-                squareName: squareName,
-                figureType: figureType,
-                player: currentTurn
-            }
+            const move = { squareName, figureType, player: currentTurn }
             return [...currentMoves, move];
         });
     }
@@ -114,38 +118,18 @@ function Board({ playingAsBlack, playable = true, location, autoRotate }) {
         enemyFigures(figures => figures.filter(fig => fig !== figureToRemove));
     }
 
-    function handlePawnPromotion() {
-        return new Promise(resolve => {
-            const closeFunction = (type) => {
-                selectedFigure.type = type;
-                selectedFigure.img = {
-                    src: imageSources[`${currentTurn}_${type}`],
-                    alt: `${currentTurn} ${type}`
-                };
-                resolve();
-                setPromoModalState(null);
-            }
-            setPromoModalState({ close: closeFunction, color: currentTurn });
-        });
-    }
-
-    function toggleSelectedStyles(figure) {
-        const enemyFigures = currentTurn === 'black' ? whiteFigures : blackFigures;
+    function toggleSelectedStyles(figure, positions) {
         const toggleClass = (className, id) => document.getElementById(id).classList.toggle(className);
-        const positions = figure.getFigureLegalMoves(gameBoard, enemyFigures);
         toggleClass('selected', figure.position);
         positions.forEach(position => {
-            if (gameBoard[position -1].occupiedBy) toggleClass('potential-move-take', position);
-            else toggleClass('potential-move', position);
+            toggleClass(`potential-move${ gameBoard[position -1].occupiedBy ? '-take' : '' }`, position);
         });
     }
 
-    function switchTurn(nextSquare) {
+    function switchTurn(figIndex, nextSquareIndex) {
         setCurrentTurn(currentTurn === 'white' ? 'black' : 'white');
         if (autoRotate) setPlayerIsBlack(!playerIsBlack);
-        if (isLocal) return;
-
-        socket.emit('move', { figIndex: selectedFigure.lastPosition - 1, nextSquareIndex: nextSquare.position - 1, roomId });
+        if (!isLocal) socket.emit('move', { figIndex, nextSquareIndex, roomId });
     }
 
     return (
