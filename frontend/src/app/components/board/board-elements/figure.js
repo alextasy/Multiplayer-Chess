@@ -22,17 +22,19 @@ export default class Figure {
         return availablePositions;
     }
 
-    seeIfCheck(board, figure) {
-        const nextPositions = figure.getDefaultMoves(board);
-        let checkedKingPos = null;
-        nextPositions.forEach(position => {
-            if (board[position - 1].occupiedBy?.type === 'king') checkedKingPos = position;
-        });
-        return checkedKingPos;
-    }
-
     canPromote() {
         return (this.type === 'pawn' && (this.position < 9 || this.position > 56));
+    }
+
+    seeIfCheck(board) {
+        const nextPositions = this.getDefaultMoves(board);
+        for (const position of nextPositions) {
+            if (board[position - 1].occupiedBy?.type === 'king') {
+                document.getElementById(position).classList.add('checked');
+                return true;
+            }
+        };
+        return false;
     }
 
     getCastlingMoves(board) {
