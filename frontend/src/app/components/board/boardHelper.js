@@ -73,3 +73,15 @@ export const promotionModal = ({ close, color }) => (
         </div>
     </Modal>
 );
+
+export const handleCastling = (board, kingNextPos, currentTurn) => {
+    const castlingPositions = currentTurn === 'black' ? [3, 7] : [59, 63];
+    if (!castlingPositions.includes(kingNextPos)) return;
+    const queenSide = kingNextPos === castlingPositions[0];
+    const currentRookSquare = queenSide ? board[kingNextPos - 3] : board[kingNextPos];
+    const futureRookSquare = queenSide ? board[kingNextPos] : board[kingNextPos - 2];
+
+    futureRookSquare.occupiedBy = currentRookSquare.occupiedBy;
+    futureRookSquare.occupiedBy.position = futureRookSquare.position;
+    currentRookSquare.occupiedBy = null;
+}
