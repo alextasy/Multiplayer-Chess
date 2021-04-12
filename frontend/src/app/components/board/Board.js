@@ -33,7 +33,7 @@ function Board({ playingAsBlack, playable = true, location, autoRotate }) {
 
     useEffect(()=> {
         if (!receivedMove) return;
-        moveFigure(receivedMove, false);
+        moveFigure(receivedMove);
         setCurrentTurn(currentTurn === 'black' ? 'white' : 'black');
         setReceivedMove(null);
     }, [receivedMove]);
@@ -65,7 +65,7 @@ function Board({ playingAsBlack, playable = true, location, autoRotate }) {
         setAvailableMoves(square.occupiedBy.getFigureLegalMoves(gameBoard, enemyFigures));
     }
 
-    async function moveFigure(square, switchAfterMove = true) {
+    async function moveFigure(square) {
         if (!receivedMove) toggleSelectedStyles(selectedFigure);
 
         if (square.position !== selectedFigure.position && square.occupiedBy?.color === currentTurn) {
@@ -92,7 +92,7 @@ function Board({ playingAsBlack, playable = true, location, autoRotate }) {
             setCheckedPlayer(true);
         }
         updateMovesHistory(square.name, selectedFigure.type);
-        if (switchAfterMove) switchTurn(square);
+        if (!receivedMove) switchTurn(square);
         setSelectedFigure(null);
         setAvailableMoves(null);
         setGameBoard(gameBoardCopy);
