@@ -39,9 +39,7 @@ function Board({ playingAsBlack, playable = true, location, autoRotate }) {
     }, [receivedMove]);
 
     // Rotate the board when props get updated
-    useEffect(() => {
-        setPlayerIsBlack(playingAsBlack);
-    }, [playingAsBlack]);
+    useEffect(() => setPlayerIsBlack(playingAsBlack), [playingAsBlack]);
 
     useEffect(() => {
         if (!checkedPlayer) return;
