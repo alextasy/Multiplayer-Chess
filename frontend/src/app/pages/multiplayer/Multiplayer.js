@@ -12,7 +12,8 @@ import { GameContext } from '../../context/GameContext';
 function Multiplayer() {
     const [rooms, setRooms] = useState([]);
     const [inRoom, setInRoom] = useState(false);
-    const { setRoomId } = useContext(GameContext);
+    const [playerIsBlack, setPlayerIsBlack] = useState(false);
+    const { setRoomId, inGame, setInGame } = useContext(GameContext);
 
     useEffect(()=> {
         socket.emit('requestRooms');
@@ -21,19 +22,22 @@ function Multiplayer() {
             setRoomId(roomId);
             setInRoom(true);
         });
+        socket.on('gameStart', () => setInGame(true))
     }, []);
 
     function createRoom(options) {
         socket.emit('createRoom', options);
+        if (options.creatorIsBlack) setPlayerIsBlack(true);
     }
 
-    function joinRoom(roomId) {
+    function joinRoom(roomId, creatorIsBlack) {
         socket.emit('joinRoom', roomId);
+        if (!creatorIsBlack) setPlayerIsBlack(true);
     }
 
     return (
         <div className='Multiplayer'>
-            <Board />
+            <Board playable={ inGame } playingAsBlack={ playerIsBlack } />
             <Aside>
                 { inRoom ? <Chat /> : null }
                 { inRoom ? <MovesHistory /> : null }

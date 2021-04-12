@@ -17,7 +17,7 @@ function JoinRoom({ rooms, joinFunc }) {
                     src={ room.password ? padlockLocked : padlockUnlocked }
                     alt={ `${room.password ? 'locked' : 'unlocked'}padlock` }/>
             </div>
-            <Button color='primary' click={ ()=> joinFunc(room.id) }>JOIN</Button>
+            <Button color='primary' click={ ()=> joinFunc(room.id, room.creatorIsBlack) }>JOIN</Button>
         </div>
     );
 

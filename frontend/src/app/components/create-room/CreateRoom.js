@@ -32,7 +32,7 @@ function CreateRoom({ createFunc }) {
             <div className='last'>
                 <Checkbox click={ ()=> setStartingAsBlack(!startingAsBlack) }/>
                 <label>START AS BLACK</label>
-                <Button color='primary' click={ ()=> createFunc({ name, password, blitz, startingAsBlack }) }>CREATE ROOM</Button>
+                <Button color='primary' click={ ()=> createFunc({ name, password, blitz, creatorIsBlack: startingAsBlack }) }>CREATE ROOM</Button>
             </div>
         </div>
     )
