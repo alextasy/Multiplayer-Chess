@@ -50,7 +50,7 @@ export const rankElements = (playerIsBlack) => {
     }
 }
 
-export const imageSources = {
+const imageSources = {
     black_bishop: bBishop,
     black_knight: bKnight,
     black_queen: bQueen,
@@ -73,6 +73,21 @@ export const promotionModal = ({ close, color }) => (
         </div>
     </Modal>
 );
+
+export const handlePawnPromotion = (fig, color, setPromoModalState) => {
+    return new Promise(resolve => {
+        const close = type => {
+            fig.type = type;
+            fig.img = {
+                src: imageSources[`${color}_${type}`],
+                alt: `${color} ${type}`
+            };
+            resolve();
+            setPromoModalState(null);
+        }
+        setPromoModalState({ close, color });
+    });
+}
 
 export const handleCastling = (board, kingNextPos, currentTurn) => {
     const castlingPositions = currentTurn === 'black' ? [3, 7] : [59, 63];
