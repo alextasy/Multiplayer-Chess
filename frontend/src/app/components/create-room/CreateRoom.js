@@ -6,10 +6,15 @@ import Checkbox from '../checkbox/Checkbox';
 import './CreateRoom.scss';
 
 function CreateRoom({ createFunc }) {
-    const [name, setName] = useState('');
+    const [name, setName] = useState({ value: '', invalidMsg: '' });
     const [password, setPassword] = useState('');
     const [blitz, setBlitz] = useState(10);
     const [startingAsBlack, setStartingAsBlack] = useState(false);
+
+    function validate() {
+        if (!name.validate) return setName({ ...name, invalidMsg: '* Field is required' });
+        createFunc({ name: name.value, password, blitz, creatorIsBlack: startingAsBlack });
+    }
 
     return (
         <div className='CreateRoom'>
@@ -17,7 +22,8 @@ function CreateRoom({ createFunc }) {
             <Input
                 id='create_room_name'
                 placeholder='* Required'
-                changeState={[ name, setName ]}>NAME</Input>
+                changeState={[ name.value, value => setName({ value, invalidMsg: null }) ]}
+                invalidMsg={ name.invalidMsg }>NAME</Input>
             <Input
                 id='create_room_pass'
                 placeholder='* Optional'
@@ -32,7 +38,7 @@ function CreateRoom({ createFunc }) {
             <div className='last'>
                 <Checkbox click={ ()=> setStartingAsBlack(!startingAsBlack) }/>
                 <label>START AS BLACK</label>
-                <Button color='primary' click={ ()=> createFunc({ name, password, blitz, creatorIsBlack: startingAsBlack }) }>CREATE ROOM</Button>
+                <Button color='primary' click={ validate }>CREATE ROOM</Button>
             </div>
         </div>
     )
