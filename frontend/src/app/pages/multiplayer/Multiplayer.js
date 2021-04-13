@@ -22,7 +22,7 @@ function Multiplayer() {
             setRoomId(roomId);
             setInRoom(true);
         });
-        socket.on('gameStart', () => setInGame(true))
+        socket.on('gameStart', () => setInGame(true));
     }, []);
 
     function createRoom(options) {
