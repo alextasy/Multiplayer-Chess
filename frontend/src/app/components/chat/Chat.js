@@ -6,7 +6,7 @@ import Button from '../button/Button';
 import { AppContext } from '../../context/AppContext';
 import { GameContext } from '../../context/GameContext';
 
-function Chat() {
+function Chat({ initialMsg }) {
     const [inputValue, setInputValue] = useState('');
     const [allMessages, setAllMessages] = useState([]);
     const { user } = useContext(AppContext);
@@ -40,6 +40,7 @@ function Chat() {
         <div className='Chat'>
             <h3>CHAT WITH OPPONENT ...</h3>
             <section ref={ sectionRef }>
+                <span style={{ fontSize: '14px' }}>{ initialMsg }</span>
                 { messageComponents }
             </section>
             <div className='input_section'>

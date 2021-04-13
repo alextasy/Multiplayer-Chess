@@ -39,7 +39,7 @@ function Multiplayer() {
         <div className='Multiplayer'>
             <Board playable={ inGame } playingAsBlack={ playerIsBlack } />
             <Aside>
-                { inRoom ? <Chat /> : null }
+                { inRoom ? <Chat initialMsg={ inGame ? null : 'Waiting for opponent to join...' }/> : null }
                 { inRoom ? <MovesHistory /> : null }
                 { inRoom ? null : <JoinRoom rooms={ rooms } joinFunc={ joinRoom } /> }
                 { inRoom ? null : <CreateRoom rooms={ rooms } createFunc={ createRoom } /> }
