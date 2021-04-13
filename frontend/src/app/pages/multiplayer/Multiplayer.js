@@ -42,7 +42,7 @@ function Multiplayer() {
                 { inRoom ? <Chat /> : null }
                 { inRoom ? <MovesHistory /> : null }
                 { inRoom ? null : <JoinRoom rooms={ rooms } joinFunc={ joinRoom } /> }
-                { inRoom ? null : <CreateRoom createFunc={ createRoom } /> }
+                { inRoom ? null : <CreateRoom rooms={ rooms } createFunc={ createRoom } /> }
             </Aside>
         </div>
     )

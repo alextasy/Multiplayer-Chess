@@ -5,14 +5,16 @@ import Radio from '../radio/Radio';
 import Checkbox from '../checkbox/Checkbox';
 import './CreateRoom.scss';
 
-function CreateRoom({ createFunc }) {
+function CreateRoom({ createFunc, rooms }) {
     const [name, setName] = useState({ value: '', invalidMsg: '' });
     const [password, setPassword] = useState('');
     const [blitz, setBlitz] = useState(10);
     const [startingAsBlack, setStartingAsBlack] = useState(false);
 
     function validate() {
-        if (!name.validate) return setName({ ...name, invalidMsg: '* Field is required' });
+        if (!name.value) return setName({ ...name, invalidMsg: '* Field is required' });
+        if (name.value.length < 5) return setName({ ...name, invalidMsg: '* Minimum length is 5 characters' });
+        if (rooms.some(room => room.name === name.value)) return setName({ ...name, invalidMsg: '* Name is taken' });
         createFunc({ name: name.value, password, blitz, creatorIsBlack: startingAsBlack });
     }
 
