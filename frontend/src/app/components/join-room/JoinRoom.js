@@ -34,7 +34,7 @@ function JoinRoom({ rooms, joinFunc }) {
                 <img src={ padlock } alt='Padlock'/>
             </div>
             <section>
-                { roomComponents.length ? roomComponents : 'No rooms are available' }
+                { roomComponents.length ? roomComponents : <div className='no-rooms'>No rooms are available currently</div> }
             </section>
 
         </div>
