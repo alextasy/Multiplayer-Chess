@@ -25,6 +25,10 @@ function Multiplayer() {
         socket.on('gameStart', () => setInGame(true));
     }, []);
 
+    // Clean up
+    useEffect(()=> inRoom ? () => socket.emit('leftRoom') : null, [inRoom]);
+    useEffect(()=> () => socket.removeAllListeners(), []);
+
     function createRoom(options) {
         socket.emit('createRoom', options);
         if (options.creatorIsBlack) setPlayerIsBlack(true);

@@ -5,11 +5,16 @@ module.exports = io => {
 
     io.on('connection', socket => {
 
+        function filterRooms(roomId = null) {
+            rooms = rooms.filter(room => room.creatorId !== socket.id && room.id !== roomId);
+            io.emit('updateRooms', rooms);
+        }
+
         socket.on('requestRooms', () => socket.emit('updateRooms', rooms));
 
         socket.on('createRoom', options => {
             const roomId = uuidv4();
-            rooms.push({ ...options, id: roomId });
+            rooms.push({ ...options, id: roomId, creatorId: socket.id });
             socket.join(roomId);
             socket.emit('roomJoined', roomId);
             socket.broadcast.emit('updateRooms', rooms);
@@ -19,8 +24,7 @@ module.exports = io => {
             socket.join(roomId);
             socket.emit('roomJoined', roomId);
             io.emit('gameStart');
-            rooms = rooms.filter(room => room.id !== roomId);
-            io.emit('updateRooms', rooms);
+            filterRooms(roomId);
         })
 
         socket.on('message', ({ message, sender, roomId }) => {
@@ -30,5 +34,8 @@ module.exports = io => {
         socket.on('move', ({ figIndex, nextSquareIndex, roomId }) => {
             socket.broadcast.to(roomId).emit('move', { figIndex, nextSquareIndex });
         })
+
+        socket.on('leftRoom', filterRooms);
+        socket.on('disconnect', filterRooms);
     });
 }
