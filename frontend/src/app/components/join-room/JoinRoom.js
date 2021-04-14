@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './JoinRoom.scss';
 import Input from '../input/Input';
 import Button from '../button/Button';
@@ -8,8 +8,19 @@ import padlockUnlocked from '../../../assets/icons/padlock_unlocked.png';
 
 function JoinRoom({ rooms, joinFunc }) {
     const [searchText, setSearchText] = useState('');
+    const [password, setPassword] = useState('');
+    const [selectedRoomId, setSelectedRoomId] = useState(null);
+
+    const passwordInput = <div className='password_input'>
+        <input
+            type='text'
+            value={ password }
+            onChange={ (e) => setPassword(e.target.value) }
+            placeholder='Enter password' />
+    </div>
+
     const roomComponents = rooms.map( room =>
-        <div className='room' key={ room.id }>
+        <div className='room' id={ room.id } key={ room.id }>
             <div className='info'>
                 <span>{ room.name }</span>
                 <span>{ room.blitz ? room.blitz : 'NO LIM' }</span>
@@ -17,9 +28,33 @@ function JoinRoom({ rooms, joinFunc }) {
                     src={ room.password ? padlockLocked : padlockUnlocked }
                     alt={ `${room.password ? 'locked' : 'unlocked'}padlock` }/>
             </div>
-            <Button color='primary' click={ ()=> joinFunc(room.id, room.creatorIsBlack) }>JOIN</Button>
+            <Button color='primary' click={ ()=> validateJoin(room) }>JOIN</Button>
+            { passwordInput }
         </div>
     );
+
+    function validateJoin(room) {
+        if (!room.password || room.password === password) return joinFunc(room.id, room.creatorIsBlack);
+        if (selectedRoomId && selectedRoomId !== room.id) {
+            document.getElementById(selectedRoomId).querySelector('input').placeholder = 'Enter password';
+            toggleClass(selectedRoomId);
+            setPassword('');
+        }
+        if (selectedRoomId === room.id) {
+            document.getElementById(selectedRoomId).querySelector('input').placeholder = 'Invalid password';
+            setPassword('');
+        }
+        setSelectedRoomId(room.id);
+    }
+
+    useEffect(() => {
+        if (!selectedRoomId) return;
+        toggleClass(selectedRoomId);
+    }, [selectedRoomId])
+
+    function toggleClass(id) {
+        document.getElementById(id).classList.toggle('active');
+    }
 
     return (
         <div className='JoinRoom'>
