@@ -8,6 +8,7 @@ import padlockUnlocked from '../../../assets/icons/padlock_unlocked.png';
 
 function JoinRoom({ rooms, joinFunc }) {
     const [searchText, setSearchText] = useState('');
+    const [filter, setFilter] = useState('');
     const [password, setPassword] = useState('');
     const [selectedRoomId, setSelectedRoomId] = useState(null);
 
@@ -19,7 +20,7 @@ function JoinRoom({ rooms, joinFunc }) {
             placeholder='Enter password' />
     </div>
 
-    const roomComponents = rooms.map( room =>
+    const roomComponents = rooms.filter(room => room.name.includes(filter)).map( room =>
         <div className='room' id={ room.id } key={ room.id }>
             <div className='info'>
                 <span>{ room.name }</span>
@@ -56,12 +57,16 @@ function JoinRoom({ rooms, joinFunc }) {
         document.getElementById(id).classList.toggle('active');
     }
 
+    function search() {
+        setFilter(searchText);
+    }
+
     return (
         <div className='JoinRoom'>
             <h3>JOIN A ROOM ...</h3>
             <div className='search_container'>
                 <Input id='search' changeState={[ searchText, setSearchText ]} placeholder='Aa'></Input>
-                <Button color='primary'>SEARCH</Button>
+                <Button color='primary' click={ search }>SEARCH</Button>
             </div>
             <div className='properties'>
                 <h3>NAME</h3>
@@ -69,7 +74,10 @@ function JoinRoom({ rooms, joinFunc }) {
                 <img src={ padlock } alt='Padlock'/>
             </div>
             <section>
-                { roomComponents.length ? roomComponents : <div className='no-rooms'>No rooms are available currently</div> }
+                { roomComponents.length ? roomComponents :
+                    <div className='no-rooms'>
+                        { rooms.length ? `No results found` : 'No rooms are available currently' }
+                    </div> }
             </section>
 
         </div>
