@@ -57,16 +57,12 @@ function JoinRoom({ rooms, joinFunc }) {
         document.getElementById(id).classList.toggle('active');
     }
 
-    function search() {
-        setFilter(searchText);
-    }
-
     return (
         <div className='JoinRoom'>
             <h3>JOIN A ROOM ...</h3>
             <div className='search_container'>
                 <Input id='search' changeState={[ searchText, setSearchText ]} placeholder='Aa'></Input>
-                <Button color='primary' click={ search }>SEARCH</Button>
+                <Button color='primary' click={ ()=> setFilter(searchText) }>SEARCH</Button>
             </div>
             <div className='properties'>
                 <h3>NAME</h3>
