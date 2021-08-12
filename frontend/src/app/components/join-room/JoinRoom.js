@@ -8,7 +8,6 @@ import padlockUnlocked from '../../../assets/icons/padlock_unlocked.png';
 
 function JoinRoom({ rooms, joinFunc }) {
     const [searchText, setSearchText] = useState('');
-    const [filter, setFilter] = useState('');
     const [password, setPassword] = useState('');
     const [selectedRoomId, setSelectedRoomId] = useState(null);
 
@@ -20,7 +19,7 @@ function JoinRoom({ rooms, joinFunc }) {
             placeholder='Enter password' />
     </div>
 
-    const roomComponents = rooms.filter(room => room.name.includes(filter)).map( room =>
+    const roomComponents = rooms.map( room =>
         <div className='room' id={ room.id } key={ room.id }>
             <div className='info'>
                 <span>{ room.name }</span>
@@ -35,16 +34,8 @@ function JoinRoom({ rooms, joinFunc }) {
     );
 
     function validateJoin(room) {
-        if (!room.password || room.password === password) return joinFunc(room.id, room.creatorIsBlack);
-        if (selectedRoomId && selectedRoomId !== room.id) {
-            document.getElementById(selectedRoomId).querySelector('input').placeholder = 'Enter password';
-            toggleClass(selectedRoomId);
-            setPassword('');
-        }
-        if (selectedRoomId === room.id) {
-            document.getElementById(selectedRoomId).querySelector('input').placeholder = 'Invalid password';
-            setPassword('');
-        }
+        if (room.password === password) return joinFunc(room.id, room.creatorIsBlack);
+        if (selectedRoomId && selectedRoomId !== room.id) toggleClass(selectedRoomId);
         setSelectedRoomId(room.id);
     }
 
@@ -62,7 +53,7 @@ function JoinRoom({ rooms, joinFunc }) {
             <h3>JOIN A ROOM ...</h3>
             <div className='search_container'>
                 <Input id='search' changeState={[ searchText, setSearchText ]} placeholder='Aa'></Input>
-                <Button color='primary' click={ ()=> setFilter(searchText) }>SEARCH</Button>
+                <Button color='primary'>SEARCH</Button>
             </div>
             <div className='properties'>
                 <h3>NAME</h3>
@@ -70,10 +61,7 @@ function JoinRoom({ rooms, joinFunc }) {
                 <img src={ padlock } alt='Padlock'/>
             </div>
             <section>
-                { roomComponents.length ? roomComponents :
-                    <div className='no-rooms'>
-                        { rooms.length ? `No results found` : 'No rooms are available currently' }
-                    </div> }
+                { roomComponents.length ? roomComponents : <div className='no-rooms'>No rooms are available currently</div> }
             </section>
 
         </div>
