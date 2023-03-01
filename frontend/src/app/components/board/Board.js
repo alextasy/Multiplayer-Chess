@@ -22,6 +22,10 @@ function Board({ playingAsBlack, playable = true, location, autoRotate }) {
     const [receivedMove, setReceivedMove] = useState(null);
 
     useEffect(()=> {
+        return setMovesHistory([]);
+    }, []);
+
+    useEffect(()=> {
         socket.on('move', ({ figIndex, nextSquareIndex }) => {
             const figToMove = gameBoard[figIndex].occupiedBy;
             const enemyFigures = currentTurn === 'black' ? blackFigures : whiteFigures;
