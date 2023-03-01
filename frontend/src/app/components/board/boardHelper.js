@@ -1,13 +1,13 @@
 import React from 'react';
 import Square from './board-elements/square';
-import bBishop from '../../../assets/figure-images/b-bishop.png';
-import bKnight from '../../../assets/figure-images/b-knight.png';
-import bQueen from '../../../assets/figure-images/b-queen.png';
-import bRook from '../../../assets/figure-images/b-rook.png';
-import wBishop from '../../../assets/figure-images/w-bishop.png';
-import wKnight from '../../../assets/figure-images/w-knight.png';
-import wQueen from '../../../assets/figure-images/w-queen.png';
-import wRook from '../../../assets/figure-images/w-rook.png';
+import black_bishop from '../../../assets/figure-images/b-bishop.png';
+import black_knight from '../../../assets/figure-images/b-knight.png';
+import black_queen from '../../../assets/figure-images/b-queen.png';
+import black_rook from '../../../assets/figure-images/b-rook.png';
+import white_bishop from '../../../assets/figure-images/w-bishop.png';
+import white_knight from '../../../assets/figure-images/w-knight.png';
+import white_queen from '../../../assets/figure-images/w-queen.png';
+import white_rook from '../../../assets/figure-images/w-rook.png';
 import Modal, { closeModal } from '../modal/Modal';
 
 let intialBoard;
@@ -50,16 +50,7 @@ export const rankElements = (playerIsBlack) => {
     }
 }
 
-const imageSources = {
-    black_bishop: bBishop,
-    black_knight: bKnight,
-    black_queen: bQueen,
-    black_rook: bRook,
-    white_bishop: wBishop,
-    white_knight: wKnight,
-    white_queen: wQueen,
-    white_rook: wRook,
-}
+const imageSources = { black_bishop, black_knight, black_queen, black_rook, white_bishop, white_knight, white_queen, white_rook };
 
 export const promotionModal = ({ close, color }) => (
     <Modal>
