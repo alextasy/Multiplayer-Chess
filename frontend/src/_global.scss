@@ -55,7 +55,6 @@ $available-positions: #0000002d;
     .Input {
         input {
             border: 1px solid $highlight;
-            border-radius: 30px;
             padding: 0 15px;
             &:focus {
                 border: 1px solid $primary;
