@@ -8,7 +8,7 @@
         width: 100vw;
         height: 100vh;
         z-index: 1000;
-        background-color: rgba(0, 0, 0, 0.6);
+        background-color: rgba(0, 0, 0, 0.7);
         animation: fade_in 300ms ease-out forwards;
         overflow: hidden;
 
@@ -21,7 +21,7 @@
                 background-color: rgba(0, 0, 0, 0);
             }
             100% {
-                background-color: rgba(0, 0, 0, 0.6);
+                background-color: rgba(0, 0, 0, 0.7);
             }
         }
     }

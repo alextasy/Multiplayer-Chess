@@ -97,7 +97,7 @@
                 background-color: $text;
                 margin: 10px;
                 border-radius: 5px;
-                border: 3px solid $primary;
+                border: 5px solid black;
                 @include flex-center(row);
                 transition: all 200ms ease-in-out;
                 img {
@@ -109,6 +109,7 @@
                 width: 150px;
                 height: 150px;
                 cursor: pointer;
+                border: 5px solid $primary;
             }
         }
     }
