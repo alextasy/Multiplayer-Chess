@@ -8,14 +8,7 @@ import pawn from '../../../assets/figure-images/g-pawn.png';
 import rook from '../../../assets/figure-images/g-rook.png';
 import { GameContext } from '../../context/GameContext';
 
-const imgSrc = {
-    bishop: bishop,
-    king: king,
-    queen: queen,
-    knight: knight,
-    rook: rook,
-    pawn: pawn,
-}
+const imgSrc = { bishop, king, queen, knight, rook, pawn };
 
 function MovesHistory() {
     const gameContext = useContext(GameContext);
@@ -28,26 +21,18 @@ function MovesHistory() {
         return whiteMoves.map((move, i) => {
             const wType = move.figureType;
             const bType = blackMoves[i]?.figureType;
-            return (
-                <div key={ i }>
+            return <div key={ i }>
                     <span>{ i + 1 }: </span>
                     <span className='white'><img src={ imgSrc[wType] } alt={ wType }/> { move.squareName }</span>
-                    {
-                        blackMoves[i]
-                        ? <span className='black'><img src={ imgSrc[bType] } alt={ bType }/> { blackMoves[i].squareName }</span>
-                        : <span className='black'></span> // Insert empty item to maintain the layout
-                    }
+                    <span className='black'>{ bType ? <><img src={ imgSrc[bType] } alt={ bType }/> { blackMoves[i].squareName }</> : '' }</span>
                 </div>
-            )
         }).reverse();
     })();
 
     return (
         <div className='MovesHistory'>
             <h3>MOVES HISTORY ...</h3>
-            <section>
-                { moves }
-            </section>
+            <section>{ moves }</section>
         </div>
     )
 }
