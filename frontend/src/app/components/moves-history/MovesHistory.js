@@ -32,6 +32,11 @@ function MovesHistory() {
     return (
         <div className='MovesHistory'>
             <h3>MOVES HISTORY ...</h3>
+            <div className='labels'>
+                <span>№</span>
+                <span>White</span>
+                <span>Black</span>
+            </div>
             <section>{ moves }</section>
         </div>
     )
