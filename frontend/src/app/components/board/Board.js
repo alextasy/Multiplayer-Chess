@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import './Board.scss';
-import { withRouter } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { initialSetUp, setFigures, rankElements, promotionModal, handleCastling, handlePawnPromotion } from './boardHelper';
 import { GameContext } from '../../context/GameContext';
 import { socket } from '../../../helpers/Socket';
 
-function Board({ playingAsBlack, playable = true, location, autoRotate }) {
+function Board({ playingAsBlack, playable = true, autoRotate }) {
     const [gameBoard, setGameBoard] = useState(initialSetUp());
     const [blackFigures, setBlackFigures] = useState(setFigures('black'));
     const [whiteFigures, setWhiteFigures] = useState(setFigures('white'));
@@ -17,6 +17,7 @@ function Board({ playingAsBlack, playable = true, location, autoRotate }) {
     const [promoModalState, setPromoModalState] = useState(null);
 
     const [playerIsBlack, setPlayerIsBlack] = useState(playingAsBlack);
+    const location = useLocation();
     const [isLocal] = useState(location.pathname === '/local');
     const { roomId, setMovesHistory } = useContext(GameContext);
     const [receivedMove, setReceivedMove] = useState(null);
@@ -166,4 +167,4 @@ function Board({ playingAsBlack, playable = true, location, autoRotate }) {
     )
 }
 
-export default withRouter(Board);
+export default Board;

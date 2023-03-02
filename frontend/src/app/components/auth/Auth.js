@@ -25,7 +25,11 @@ function SignUp() {
         // Gets the first input of the form - display name if signing up or email if signing in
         const input = authRef.current.querySelector('input');
         authRef.current.style.transitionDelay = `${ transitionDelay }ms`;
-        authRef.current.classList.toggle('active');
+        // TODO: Look into better ways of animating
+        setTimeout(() => {
+            if (isSigningIn || isSigningUp) authRef.current.classList.add('active');
+            else authRef.current.classList.remove('active'); 
+        });
         setTimeout(() => input.focus(), transitionTime + transitionDelay);
     }, [isSigningIn, isSigningUp]);
 

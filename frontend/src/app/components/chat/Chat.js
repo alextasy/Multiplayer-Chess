@@ -27,8 +27,8 @@ function Chat({ initialMsg }) {
         )
     });
 
-    useEffect(() => socket.on('message', message => setAllMessages(currentMsg => [...currentMsg, message])), []);
-    useEffect(()=> sectionRef.current.scrollTop = sectionRef.current.scrollHeight, [allMessages]);
+    useEffect(()=> { socket.on('message', message => setAllMessages(currentMsg => [...currentMsg, message])) }, []);
+    useEffect(()=> { sectionRef.current.scrollTop = sectionRef.current.scrollHeight }, [allMessages]);
 
     function sendMessage() {
         if (!inputValue) return;

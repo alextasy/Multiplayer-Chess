@@ -3,11 +3,13 @@ import './SideMenu.scss';
 import logo from '../../../assets/icons/logo.png';
 import HorizontalLine from '../horizontal-line/HorizontalLine';
 import Button from '../button/Button';
-import { withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import Auth from '../auth/Auth';
 
-function SideMenu({ history }) {
+function SideMenu() {
+    const navigate = useNavigate();
+
     const {
         isSigningIn, isSigningUp,
         setIsSigningIn, setIsSigningUp,
@@ -31,18 +33,18 @@ function SideMenu({ history }) {
 
     return (
         <div className='SideMenu'>
-            <img src={ logo } alt='logo' onClick={ ()=> history.push('/') } style={{ cursor: 'pointer' }}/>
+            <img src={ logo } alt='logo' onClick={ ()=> navigate('/') } style={{ cursor: 'pointer' }}/>
             <HorizontalLine />
             <section className={ isSigningIn || isSigningUp ? 'hidden' : ''} ref={ sectionRef }>
                 <h3>PLAY AS { isAuth ? user.displayName.toUpperCase() : 'GUEST' }</h3>
-                <Button click={() => history.push('/local') }>LOCAL MULTIPLAYER</Button>
-                <Button click={() => history.push('/multiplayer') }>ONLINE MULTIPLAYER</Button>
+                <Button click={() => navigate('/local') }>LOCAL MULTIPLAYER</Button>
+                <Button click={() => navigate('/multiplayer') }>ONLINE MULTIPLAYER</Button>
                 <HorizontalLine />
                 <h3>{ isAuth ? 'PERSONAL INFO' : 'SIGN IN TO USE' }</h3>
-                <Button click={() => history.push('/history') }>MATCH HISTORY</Button>
-                <Button click={() => history.push('/profile') }>MY PROFILE</Button>
+                <Button click={() => navigate('/history') }>MATCH HISTORY</Button>
+                <Button click={() => navigate('/profile') }>MY PROFILE</Button>
                 { isAuth ? null : <Button click={() => setIsSigningIn(true) } color='primary'>SIGN IN</Button> }
-                { isAuth ? <Button click={() => history.push('/multiplayer') } color='primary' >PLAY NOW</Button> : null }
+                { isAuth ? <Button click={() => navigate('/multiplayer') } color='primary' >PLAY NOW</Button> : null }
                 { isAuth ? signOutParagraph : signUpParagraph }
             </section>
             { isSigningIn || isSigningUp ? <Auth/> : null }
@@ -51,4 +53,4 @@ function SideMenu({ history }) {
     )
 }
 
-export default withRouter(SideMenu);
+export default SideMenu;

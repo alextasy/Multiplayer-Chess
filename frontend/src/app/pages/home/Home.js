@@ -2,11 +2,12 @@ import React, { useContext } from 'react';
 import './Home.scss';
 import Board from '../../components/board/Board';
 import Button from '../../components/button/Button';
-import { withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import HorizontalLine from '../../components/horizontal-line/HorizontalLine';
 
-function Home({ history }) {
+function Home() {
+    const navigate = useNavigate();
     const { setIsSigningIn, setIsSigningUp, user, isAuth } = useContext(AppContext);
 
     const defaultFirstP = <p>
@@ -40,10 +41,10 @@ function Home({ history }) {
                 { isAuth ? authSecondP : defaultSecondP }
                 <div>
                     <Button
-                        click={() => isAuth ? history.push('/multiplayer') : setIsSigningIn(true) }
+                        click={() => isAuth ? navigate('/multiplayer') : setIsSigningIn(true) }
                         color='primary'>{ isAuth ? 'PLAY NOW' : 'SIGN IN' }</Button>
                     <Button
-                        click={()=> history.push('/multiplayer') }
+                        click={()=> navigate('/multiplayer') }
                         color='highlight'>{ isAuth ? 'PERSONALIZE' : 'PLAY AS A GUEST' }</Button>
                 </div>
             </div>
@@ -53,4 +54,4 @@ function Home({ history }) {
     )
 }
 
-export default withRouter(Home);
+export default Home;

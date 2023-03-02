@@ -1,5 +1,5 @@
 import './App.scss';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Home from './app/pages/home/Home';
 import Local from './app/pages/local/Local';
 import SideMenu from './app/components/side-menu/SideMenu';
@@ -11,7 +11,6 @@ import { useContext, useEffect, useRef } from 'react';
 function App() {
   const { isSigningIn, isSigningUp, isAuth, setIsAuth, setUser } = useContext(AppContext);
   const overlay = useRef(null);
-  const initialLoad = useRef(true);
 
   function handleNoToken() {
     localStorage.clear();
@@ -31,22 +30,17 @@ function App() {
     setIsAuth(true);
   }, [isAuth]);
 
-  useEffect(() => {
-    if (initialLoad.current) return initialLoad.current = false;
-    overlay.current.classList.toggle('active');
-  }, [isSigningIn, isSigningUp])
-
   return (
     <GameContextProvider>
       <div className="App">
         <SideMenu />
         <div className='container'>
-          <Switch>
-            <Route path='/' exact component={ Home }/>
-            <Route path='/local' exact component={ Local }/>
-            <Route path='/multiplayer' exact component={ Multiplayer }/>
-          </Switch>
-          <div className='authOverlay' ref={ overlay }></div>
+          <Routes>
+            <Route path='/' exact element={ <Home /> }/>
+            <Route path='/local' exact element={ <Local /> }/>
+            <Route path='/multiplayer' exact element={ <Multiplayer /> }/>
+          </Routes>
+          <div className={`authOverlay ${isSigningIn || isSigningUp ? 'active' : ''}`} ref={ overlay }></div>
         </div>
       </div>
     </GameContextProvider>

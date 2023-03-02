@@ -26,7 +26,7 @@ function Multiplayer() {
     }, []);
 
     // Clean up
-    useEffect(()=> inRoom ? () => socket.emit('leftRoom') : null, [inRoom]);
+    useEffect(()=> () => inRoom ? socket.emit('leftRoom') : null, [inRoom]);
     useEffect(()=> () => socket.removeAllListeners(), []);
 
     function createRoom(options) {
