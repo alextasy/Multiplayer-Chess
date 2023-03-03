@@ -33,7 +33,7 @@
         div {
             display: flex;
 
-            &:first-child.Button{
+            .Button:first-child {
                 margin-right: 20px;
                 width: 150px;
             }

@@ -2,7 +2,9 @@
 
 .Button{
     @include flex-center(row);
-
+    outline: none;
+    border:  none;
+    
     width: 215px;
     height: 35px;
     background-color: $background;
