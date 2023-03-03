@@ -3,13 +3,11 @@ import './SideMenu.scss';
 import logo from '../../../assets/icons/logo.png';
 import HorizontalLine from '../horizontal-line/HorizontalLine';
 import Button from '../button/Button';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import Auth from '../auth/Auth';
 
 function SideMenu() {
-    const navigate = useNavigate();
-
     const {
         isSigningIn, isSigningUp,
         setIsSigningIn, setIsSigningUp,
@@ -33,18 +31,18 @@ function SideMenu() {
 
     return (
         <div className='SideMenu'>
-            <img src={ logo } alt='logo' onClick={ ()=> navigate('/') } style={{ cursor: 'pointer' }}/>
+            <Link to='/'><img src={ logo } alt='logo'/></Link>
             <HorizontalLine />
             <section className={ isSigningIn || isSigningUp ? 'hidden' : ''} ref={ sectionRef }>
                 <h3>PLAY AS { isAuth ? user.displayName.toUpperCase() : 'GUEST' }</h3>
-                <Button click={() => navigate('/local') }>LOCAL MULTIPLAYER</Button>
-                <Button click={() => navigate('/multiplayer') }>ONLINE MULTIPLAYER</Button>
+                <Button linkTo='/local'>LOCAL MULTIPLAYER</Button>
+                <Button linkTo='/multiplayer'>ONLINE MULTIPLAYER</Button>
                 <HorizontalLine />
                 <h3>{ isAuth ? 'PERSONAL INFO' : 'SIGN IN TO USE' }</h3>
-                <Button click={() => navigate('/history') }>MATCH HISTORY</Button>
-                <Button click={() => navigate('/profile') }>MY PROFILE</Button>
+                <Button linkTo='/history'>MATCH HISTORY</Button>
+                <Button linkTo='/profile'>MY PROFILE</Button>
                 { isAuth ? null : <Button click={() => setIsSigningIn(true) } color='primary'>SIGN IN</Button> }
-                { isAuth ? <Button click={() => navigate('/multiplayer') } color='primary' >PLAY NOW</Button> : null }
+                { isAuth ? <Button linkTo='/multiplayer' color='primary'>PLAY NOW</Button> : null }
                 { isAuth ? signOutParagraph : signUpParagraph }
             </section>
             { isSigningIn || isSigningUp ? <Auth/> : null }

@@ -2,12 +2,10 @@ import React, { useContext } from 'react';
 import './Home.scss';
 import Board from '../../components/board/Board';
 import Button from '../../components/button/Button';
-import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import HorizontalLine from '../../components/horizontal-line/HorizontalLine';
 
 function Home() {
-    const navigate = useNavigate();
     const { setIsSigningIn, setIsSigningUp, user, isAuth } = useContext(AppContext);
 
     const defaultFirstP = <p>
@@ -40,12 +38,8 @@ function Home() {
                 { isAuth ? authFirstP : defaultFirstP }
                 { isAuth ? authSecondP : defaultSecondP }
                 <div>
-                    <Button
-                        click={() => isAuth ? navigate('/multiplayer') : setIsSigningIn(true) }
-                        color='primary'>{ isAuth ? 'PLAY NOW' : 'SIGN IN' }</Button>
-                    <Button
-                        click={()=> navigate('/multiplayer') }
-                        color='highlight'>{ isAuth ? 'PERSONALIZE' : 'PLAY AS A GUEST' }</Button>
+                    <Button linkTo={ isAuth ? '/multiplayer' : null } click={() => !isAuth ? setIsSigningIn(true) : null } color='primary'>{ isAuth ? 'PLAY NOW' : 'SIGN IN' }</Button>
+                    <Button linkTo={ isAuth ? '/profile' : '/multiplayer' } color='highlight'>{ isAuth ? 'PERSONALIZE' : 'PLAY AS A GUEST' }</Button>
                 </div>
             </div>
             <Board playable={ false }/>
