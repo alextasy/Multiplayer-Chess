@@ -10,14 +10,12 @@ export default class Figure {
     getFigureLegalMoves(board, enemyFigures) {
         let availablePositions = this.getDefaultMoves(board);
         if (this.type === 'king') availablePositions.push(...this.getCastlingMoves(board));
-        availablePositions.forEach(potentialPositon => {
+        availablePositions = availablePositions.filter(potentialPositon => {
             const boardCopy = [...board].map(square => Object.create(square)); //Get a deep copy
+            const enemyFiguresCopy = enemyFigures.filter(fig => fig.position !== potentialPositon); // Remove figures that will be taken by this potential move
             boardCopy[this.position - 1].occupiedBy = null;
             boardCopy[potentialPositon - 1].occupiedBy = this;
-            enemyFigures.forEach(fig => {
-                if (potentialPositon === fig.position) return; // Meaning we can take the attacking figure
-                if (this.seeIfCheck(boardCopy, fig)) availablePositions = availablePositions.filter(position => position !== potentialPositon);
-            });
+            return !this.enemyCouldCheck(boardCopy, enemyFiguresCopy);
         });
         return availablePositions;
     }
@@ -26,19 +24,24 @@ export default class Figure {
         return (this.type === 'pawn' && (this.position < 9 || this.position > 56));
     }
 
-    seeIfCheck(board) {
-        const nextPositions = this.getDefaultMoves(board);
+    seeIfCheck(board, fig = this) {
+        const nextPositions = fig.getDefaultMoves(board);
         for (const position of nextPositions) {
-            if (board[position - 1].occupiedBy?.type === 'king') {
-                document.getElementById(position).classList.add('checked');
-                return true;
-            }
+            if (board[position - 1].occupiedBy?.type === 'king') return position;
         };
+        return -1;
+    }
+
+    enemyCouldCheck(board, enemyFigures) {
+        for (const fig of enemyFigures) {
+            if (this.seeIfCheck(board, fig) !== -1) return true;
+        }
         return false;
     }
 
     getCastlingMoves(board) {
-        if (this.checked || this.lastPosition) return [];
+        const checked = document.getElementById(this.position).classList.contains('checked');
+        if (checked || this.lastPosition) return [];
         const moves = [];
         const rookPositons = this.color === 'black' ? [1, 8] : [57, 64];
         // Checks if there is a square that is taken at the positions -1, -2, -3 in relation to the king (this) and -1 more due to array index

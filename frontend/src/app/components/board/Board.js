@@ -13,7 +13,6 @@ function Board({ playingAsBlack, playable = true, autoRotate }) {
     const [availableMoves, setAvailableMoves] = useState (null);
 
     const [currentTurn, setCurrentTurn] = useState('white');
-    const [checkedPlayer, setCheckedPlayer] = useState(null);
     const [promoModalState, setPromoModalState] = useState(null);
 
     const [playerIsBlack, setPlayerIsBlack] = useState(playingAsBlack);
@@ -47,8 +46,6 @@ function Board({ playingAsBlack, playable = true, autoRotate }) {
     useEffect(() => setPlayerIsBlack(playingAsBlack), [playingAsBlack]);
 
     useEffect(() => {
-        if (!checkedPlayer) return;
-
         let hasLegalMoves = false;
         const figures = currentTurn === 'black' ? blackFigures : whiteFigures;
         const enemyFigures = currentTurn === 'black' ? whiteFigures : blackFigures;
@@ -61,7 +58,6 @@ function Board({ playingAsBlack, playable = true, autoRotate }) {
         };
 
         if (!hasLegalMoves) console.log('GG');
-        else setCheckedPlayer(false);
     }, [currentTurn]);
 
     function selectFigure(square) {
@@ -101,7 +97,9 @@ function Board({ playingAsBlack, playable = true, autoRotate }) {
         gameBoardCopy[square.position -1].occupiedBy = selectedFigure;
 
         if (selectedFigure.canPromote()) await handlePawnPromotion(selectedFigure, currentTurn, setPromoModalState);
-        if (selectedFigure.seeIfCheck(gameBoardCopy)) setCheckedPlayer(true);
+
+        const checkedPosition = selectedFigure.seeIfCheck(gameBoardCopy);
+        if (checkedPosition !== -1) document.getElementById(checkedPosition).classList.add('checked');
 
         updateMovesHistory(square.name, selectedFigure.type);
         setSelectedFigure(null);
