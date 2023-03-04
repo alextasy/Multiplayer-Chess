@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import './Board.scss';
 import { useLocation } from 'react-router-dom';
-import { initialSetUp, setFigures, rankElements, promotionModal, handleCastling, handlePawnPromotion } from './boardHelper';
+import { initialSetUp, setFigures, rankElements, promotionModal, handleCastling, handlePawnPromotion, checkGameOver } from './boardHelper';
 import { GameContext } from '../../context/GameContext';
 import { socket } from '../../../helpers/Socket';
 
@@ -21,9 +21,7 @@ function Board({ playingAsBlack, playable = true, autoRotate }) {
     const { roomId, setMovesHistory } = useContext(GameContext);
     const [receivedMove, setReceivedMove] = useState(null);
 
-    useEffect(()=> {
-        return setMovesHistory([]);
-    }, []);
+    useEffect(()=> setMovesHistory([]), []);
 
     useEffect(()=> {
         socket.on('move', ({ figIndex, nextSquareIndex }) => {
@@ -46,18 +44,9 @@ function Board({ playingAsBlack, playable = true, autoRotate }) {
     useEffect(() => setPlayerIsBlack(playingAsBlack), [playingAsBlack]);
 
     useEffect(() => {
-        let hasLegalMoves = false;
-        const figures = currentTurn === 'black' ? blackFigures : whiteFigures;
-        const enemyFigures = currentTurn === 'black' ? whiteFigures : blackFigures;
-
-        for (const fig of figures) {
-            if (fig.getFigureLegalMoves(gameBoard, enemyFigures).length) {
-                hasLegalMoves = true;
-                break;
-            }
-        };
-
-        if (!hasLegalMoves) console.log('GG');
+        if (!checkGameOver(gameBoard, currentTurn, whiteFigures, blackFigures)) return;
+        
+        console.log('GG');
     }, [currentTurn]);
 
     function selectFigure(square) {

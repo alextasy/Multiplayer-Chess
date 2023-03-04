@@ -91,3 +91,12 @@ export const handleCastling = (board, kingNextPos, currentTurn) => {
     futureRookSquare.occupiedBy.position = futureRookSquare.position;
     currentRookSquare.occupiedBy = null;
 }
+
+export const checkGameOver = (board, currentTurn, whiteFigures, blackFigures) => {
+    const figures = currentTurn === 'black' ? blackFigures : whiteFigures;
+    const enemyFigures = currentTurn === 'black' ? whiteFigures : blackFigures;
+    for (const fig of figures) {
+        if (fig.getFigureLegalMoves(board, enemyFigures).length) return false;
+    };
+    return true;
+}
