@@ -112,5 +112,19 @@
                 border: 5px solid $primary;
             }
         }
+
+        .gameover-container {
+            @include flex-center(column);
+            & > * { filter: drop-shadow(0.35rem 0.35rem 0.4rem rgba(0, 0, 0, 0.5)); }
+            h1 {  margin-bottom: 8px; }
+            p {
+                span {
+                    color: var(--primary);
+                    font-weight: bold;
+                }
+                b { margin-left: 4px; }
+            }
+            .Button { margin-top: 16px; }
+        }
     }
 }

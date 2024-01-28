@@ -9,8 +9,7 @@ import white_knight from '../../../assets/figure-images/w-knight.png';
 import white_queen from '../../../assets/figure-images/w-queen.png';
 import white_rook from '../../../assets/figure-images/w-rook.png';
 import Modal, { closeModal } from '../modal/Modal';
-
-let intialBoard;
+import Button from '../button/Button';
 
 export function initialSetUp() {
     const arr = [];
@@ -21,12 +20,11 @@ export function initialSetUp() {
         arr.push(square);
         if (i % 8 === 0) colorShouldInverse = !colorShouldInverse;
     }
-    intialBoard = arr;
     return arr;
 }
 
-export function setFigures(color) {
-    return intialBoard.filter(square => square.occupiedBy?.color === color).map(square => square.occupiedBy)
+export function setFigures(board, color) {
+    return board.filter(square => square.occupiedBy?.color === color).map(square => square.occupiedBy)
 }
 
 export const firstCol = [1, 9, 17, 25, 33, 41, 49, 57];
@@ -100,3 +98,13 @@ export const checkGameOver = (board, currentTurn, whiteFigures, blackFigures) =>
     };
     return true;
 }
+
+export const gameOverModal = ({ close, winner, reason }) => (
+    <Modal>
+        <div className='gameover-container'>
+            <h1>GAME OVER</h1>
+            <p>Winner by <span>{ reason }</span>: <b>{ winner }</b></p>
+            <Button color='primary' click={ close }>OKAY</Button>
+        </div>
+    </Modal>
+);

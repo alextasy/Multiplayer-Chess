@@ -13,7 +13,8 @@ function Multiplayer() {
     const [rooms, setRooms] = useState([]);
     const [inRoom, setInRoom] = useState(false);
     const [playerIsBlack, setPlayerIsBlack] = useState(false);
-    const { setRoomId, inGame, setInGame } = useContext(GameContext);
+    const { roomId, setRoomId, inGame, setInGame } = useContext(GameContext);
+    const [key, SetKey] = useState(new Date().getTime()); // Setting unique key resets the state
 
     useEffect(()=> {
         socket.emit('requestRooms');
@@ -22,7 +23,10 @@ function Multiplayer() {
             setRoomId(roomId);
             setInRoom(true);
         });
-        socket.on('gameStart', () => setInGame(true));
+        socket.on('gameStart', () => {
+            SetKey(new Date().getTime());
+            setInGame(true)
+        });
     }, []);
 
     // Clean up
@@ -39,9 +43,18 @@ function Multiplayer() {
         if (!creatorIsBlack) setPlayerIsBlack(true);
     }
 
+    function handleGameOver() {
+        SetKey(new Date().getTime());
+        socket.emit('gameOver', roomId);
+        setInRoom(false);
+        setRoomId('');
+        setInGame(false);
+        setPlayerIsBlack(false);
+    }
+
     return (
         <div className='Multiplayer'>
-            <Board playable={ inGame } playingAsBlack={ playerIsBlack } />
+            <Board key={key} playable={ inGame } playingAsBlack={ playerIsBlack } handleGameOver={ handleGameOver } />
             <Aside>
                 { inRoom ? <Chat initialMsg={ inGame ? null : 'Waiting for opponent to join...' }/> : null }
                 { inRoom ? <MovesHistory /> : null }

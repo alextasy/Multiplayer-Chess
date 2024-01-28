@@ -9,10 +9,11 @@ import './Local.scss';
 function Local() {
     const [playingAsBlack, setPlayingAsBlack] = useState(false);
     const [autoRotate, setAutoRotate] = useState(false);
+    const [key, SetKey] = useState(new Date().getTime()); // Setting unique key resets the state
 
     return (
         <div className='Local'>
-            <Board playingAsBlack={ playingAsBlack } autoRotate= { autoRotate }/>
+            <Board key={key} playingAsBlack={ playingAsBlack } autoRotate= { autoRotate } handleGameOver={ () => { SetKey(new Date().getTime()) } } />
             <Aside>
                 <MovesHistory ></MovesHistory>
                 <div className='controls'>

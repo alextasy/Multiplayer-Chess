@@ -1,19 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react';
 import './Board.scss';
 import { useLocation } from 'react-router-dom';
-import { initialSetUp, setFigures, rankElements, promotionModal, handleCastling, handlePawnPromotion, checkGameOver } from './boardHelper';
+import { initialSetUp, setFigures, rankElements, promotionModal, handleCastling, handlePawnPromotion, checkGameOver, gameOverModal } from './boardHelper';
 import { GameContext } from '../../context/GameContext';
 import { socket } from '../../../helpers/Socket';
 
-function Board({ playingAsBlack, playable = true, autoRotate }) {
+function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) {
     const [gameBoard, setGameBoard] = useState(initialSetUp());
-    const [blackFigures, setBlackFigures] = useState(setFigures('black'));
-    const [whiteFigures, setWhiteFigures] = useState(setFigures('white'));
+    const [blackFigures, setBlackFigures] = useState(setFigures(gameBoard, 'black'));
+    const [whiteFigures, setWhiteFigures] = useState(setFigures(gameBoard, 'white'));
     const [selectedFigure, setSelectedFigure] = useState(null);
     const [availableMoves, setAvailableMoves] = useState (null);
 
     const [currentTurn, setCurrentTurn] = useState('white');
     const [promoModalState, setPromoModalState] = useState(null);
+    const [gameOverModalState, setGameOverModalState] = useState(null);
 
     const [playerIsBlack, setPlayerIsBlack] = useState(playingAsBlack);
     const location = useLocation();
@@ -30,7 +31,16 @@ function Board({ playingAsBlack, playable = true, autoRotate }) {
             setSelectedFigure(figToMove);
             setAvailableMoves(figToMove.getFigureLegalMoves(gameBoard, enemyFigures));
             setReceivedMove(gameBoard[nextSquareIndex]);
-        })
+        });
+        socket.on('opponentDisconnected', ()=> {
+            const winner = 'YOU'; // We win by default
+            setGameOverModalState({ close: handleGameOver, winner, reason: 'forfeit' });
+        });
+        return () => {
+            // clean up so we don't get duplicate events
+            socket.removeListener('move');
+            socket.removeListener('opponentDisconnected');
+        }
     }, []);
 
     useEffect(()=> {
@@ -45,8 +55,9 @@ function Board({ playingAsBlack, playable = true, autoRotate }) {
 
     useEffect(() => {
         if (!checkGameOver(gameBoard, currentTurn, whiteFigures, blackFigures)) return;
-        
-        console.log('GG');
+        const winnerColor = currentTurn === 'black' ? 'white' : 'black'; // We first change the turn then check if there are available moves
+        const winner = (playerIsBlack && winnerColor === 'black') || (!playerIsBlack && winnerColor === 'white') ? 'YOU' : 'OPPONENT';
+        setGameOverModalState({ close: handleGameOver, winner, reason: 'checkmate' });
     }, [currentTurn]);
 
     function selectFigure(square) {
@@ -150,6 +161,7 @@ function Board({ playingAsBlack, playable = true, autoRotate }) {
             <div className='row-ranks'>{ rankElements(playerIsBlack).rowRanks }</div>
             <div className='col-ranks'>{ rankElements(playerIsBlack).colRanks }</div>
             { promoModalState ? promotionModal( promoModalState) : ''}
+            { gameOverModalState ? gameOverModal(gameOverModalState) : '' }
         </div>
     )
 }

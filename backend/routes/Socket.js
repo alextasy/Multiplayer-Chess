@@ -2,6 +2,7 @@ const { v4: uuidv4 } = require('uuid');
 
 module.exports = io => {
     let rooms = [];
+    let inGameRooms = [];
 
     io.on('connection', socket => {
 
@@ -24,6 +25,9 @@ module.exports = io => {
             socket.join(roomId);
             socket.emit('roomJoined', roomId);
             io.emit('gameStart');
+            const room = rooms.find(room => room.id === roomId);
+            room.visitorId = socket.id;
+            inGameRooms.push(room);
             filterRooms(roomId);
         })
 
@@ -36,6 +40,16 @@ module.exports = io => {
         })
 
         socket.on('leftRoom', filterRooms);
-        socket.on('disconnect', filterRooms);
+        socket.on('disconnect', () => {
+            filterRooms();
+            const roomPlayerWasIn = inGameRooms.find(room => room.visitorId === socket.id || room.creatorId === socket.id);
+            if (!roomPlayerWasIn) return;
+            io.to(roomPlayerWasIn.id).emit('opponentDisconnected');
+            inGameRooms = inGameRooms.filter(room => room.id !== roomPlayerWasIn.id);
+        });
+
+        socket.on('gameOver', roomId => {
+            inGameRooms = inGameRooms.filter(room => room.id !== roomId)
+        });
     });
 }
