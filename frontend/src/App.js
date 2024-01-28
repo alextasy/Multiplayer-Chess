@@ -6,11 +6,15 @@ import SideMenu from './app/components/side-menu/SideMenu';
 import Multiplayer from './app/pages/multiplayer/Multiplayer';
 import GameContextProvider from './app/context/GameContext';
 import { AppContext } from './app/context/AppContext';
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import menuIcon from './assets/icons/menu.svg';
+import logo from './assets/icons/logo.png';
+import { Link } from 'react-router-dom';
 
 function App() {
-  const { isChangingName, setUserDisplayName } = useContext(AppContext);
-  const overlay = useRef(null);
+  const { isChangingName, setIsChangingName, setUserDisplayName } = useContext(AppContext);
+  const [isSideMenuExpanded, setIsSideMenuExpanded] = useState(true);
+  const menuCloseTransition = 350;
 
   // Set an initial display name for user
   useEffect(() => {
@@ -18,18 +22,27 @@ function App() {
     setUserDisplayName(`Guest_${id}`);
   }, []);
 
+  function closeSideMenu() {
+    setIsSideMenuExpanded(false);
+    setTimeout(() => setIsChangingName(false), menuCloseTransition);
+  }
+
   return (
     <GameContextProvider>
       <div className="App">
-        <SideMenu />
+        <header>
+          <img onClick={ ()=> setIsSideMenuExpanded(!isSideMenuExpanded) } className='menu-icon' src={ menuIcon } alt='menu icon'/>
+          <Link className='logo' to='/'><img src={ logo } alt='logo'/></Link>
+        </header>
         <div className='container'>
+          <SideMenu isSideMenuExpanded={isSideMenuExpanded} close={ closeSideMenu }/>
           <Routes>
             <Route path='/' exact element={ <Home /> }/>
             <Route path='/local' exact element={ <Local /> }/>
             <Route path='/multiplayer' exact element={ <Multiplayer /> }/>
           </Routes>
-          <div className={`authOverlay ${isChangingName ? 'active' : ''}`} ref={ overlay }></div>
         </div>
+        <div onClick={ closeSideMenu } className={`side-menu-overlay ${isChangingName ? 'active' : ''} ${isSideMenuExpanded ? 'side-menu-active' : ''}`}></div>
       </div>
     </GameContextProvider>
   );

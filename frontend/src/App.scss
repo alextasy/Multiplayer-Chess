@@ -1,23 +1,61 @@
 @import 'global';
 
 .App{
+    --header-height: 88px;
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     background-color: $background;
-    display: flex;
+    padding-top: 90px;
+    @media (min-width: 1600px) {  padding-top: 0;  }
 
-    .container{
-        width: calc(100% - 320px);
+    header {
+        @media (min-width: 1600px) {  display: none;  }
+        z-index: 1;
+        background-color: var(--backgroundDark);
+        width: 100%;
+        height: var(--header-height);
+        padding: 20px;
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        border-bottom: 2px solid var(--primary);
+        .menu-icon {
+            padding: 8px;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+        }
+        .logo {
+            height: 48px;
+            margin: auto;
+            // Offsets the icon so the logo is in the middle of the screen
+            padding-right: 48px;
+            img { height: 100%; }
+        }
+    }
+
+    .container { 
+        display: flex;
+        .SideMenu { flex-shrink: 0; }
+    }
+
+    .side-menu-overlay {
+        pointer-events: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
         height: 100%;
-        .authOverlay {
-            pointer-events: none;
-            position: absolute;
-            top: 0;
-            width: calc(100% - 320px);
-            height: 100vh;
-            background-color: transparent;
-            transition: background-color 350ms ease-in 50ms;
-            &.active {
+        z-index: 1;
+        background-color: transparent;
+        transition: background-color 350ms ease-in 50ms;
+        &.active {
+            pointer-events: initial;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+        &.side-menu-active {
+            @media (max-width: 1599px) {
                 pointer-events: initial;
                 background-color: rgba(0, 0, 0, 0.6);
             }

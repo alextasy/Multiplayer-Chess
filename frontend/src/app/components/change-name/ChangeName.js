@@ -44,17 +44,19 @@ function SignUp() {
     }
 
     return (
-        <div className='ChangeName' ref={ ref }>
-            <form autoComplete='off'>
-                <Input
-                    id='display_name'
-                    changeState={[ form.displayName, displayName => setForm({ ...form, displayName, invalidDisplayName: '' }) ]}
-                    invalidMsg={ form.invalidDisplayName }
-                    >Display name:
-                </Input>
-                <Button color='primary' click={ saveDisplayName }>SAVE</Button>
-            </form>
-            <CollapseArrow collapse={ collapseFunction }>CANCEL</CollapseArrow>
+        <div className='ChangeName'>
+            <div className='form-container' ref={ ref }>
+                <form autoComplete='off'>
+                    <Input
+                        id='display_name'
+                        changeState={[ form.displayName, displayName => setForm({ ...form, displayName, invalidDisplayName: '' }) ]}
+                        invalidMsg={ form.invalidDisplayName }
+                        >Display name:
+                    </Input>
+                    <Button color='primary' click={ saveDisplayName }>SAVE</Button>
+                </form>
+                <CollapseArrow collapse={ collapseFunction }>CANCEL</CollapseArrow>
+            </div>
         </div>
     )
 }

@@ -1,26 +1,29 @@
 @import '../../../global';
 
-.ChangeName {
+.ChangeName  {
     width: 100%;
-    height: fit-content;
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px 0;
-    top: 120px;
-    transition: transform 250ms ease-out 400ms;
-    transform: translateY(85vh);
-    &.active {
-        transform: translateY(0);
-    }
+    height: 100%;
+    position: relative;
+    overflow: hidden;
 
-    form {
-        width: 80%;
-        .Button {
-            margin: 25px 0 10px;
-            width: 100%;
-            height: 38px;
+    .form-container {
+        position: absolute;
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px 0;
+        transition: transform 250ms ease-out 400ms;
+        transform: translateY(calc(100vh - 200px));
+        &.active { transform: translateY(0); }
+        form {
+            width: 80%;
+            .Button {
+                margin: 25px 0 10px;
+                width: 100%;
+                height: 38px;
+            }
         }
     }
 }
