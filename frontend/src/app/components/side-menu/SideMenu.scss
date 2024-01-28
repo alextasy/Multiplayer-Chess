@@ -24,6 +24,11 @@
             font-weight: normal;
             color: $primary;
             margin: 25px;
+            &.no-margin-bottom { margin-bottom: 0; }
+        }
+
+        b {
+            margin: 8px 0 20px;
         }
 
         .Button + .HorizontalLine {

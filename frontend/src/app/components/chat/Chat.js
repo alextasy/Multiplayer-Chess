@@ -9,12 +9,12 @@ import { GameContext } from '../../context/GameContext';
 function Chat({ initialMsg }) {
     const [inputValue, setInputValue] = useState('');
     const [allMessages, setAllMessages] = useState([]);
-    const { user } = useContext(AppContext);
+    const { userDisplayName } = useContext(AppContext);
     const { roomId } = useContext(GameContext);
     const sectionRef = useRef();
 
     const messageComponents = allMessages.map((msg, index) => {
-        const fromMe = user.displayName === msg.sender;
+        const fromMe = userDisplayName === msg.sender;
         const hideLabel = index > 0 && allMessages[index - 1].sender === msg.sender;
 
         return (
@@ -32,7 +32,7 @@ function Chat({ initialMsg }) {
 
     function sendMessage() {
         if (!inputValue) return;
-        socket.emit('message', { sender: user.displayName, message: inputValue, roomId });
+        socket.emit('message', { sender: userDisplayName, message: inputValue, roomId });
         setInputValue('');
     }
 

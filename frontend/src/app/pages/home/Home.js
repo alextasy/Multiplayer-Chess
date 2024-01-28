@@ -6,17 +6,18 @@ import { AppContext } from '../../context/AppContext';
 import HorizontalLine from '../../components/horizontal-line/HorizontalLine';
 
 function Home() {
-    const { setIsSigningIn, setIsSigningUp, user, isAuth } = useContext(AppContext);
+    const { setIsChangingName } = useContext(AppContext);
+    const isAuth = false;
 
     const defaultFirstP = <p>
         Invite your friends and play some chess online! Feel free to
-        <b onClick={() => setIsSigningUp(true) }> SIGN UP</b> to
+        <b onClick={() => {} }> SIGN UP</b> to
         get cool new features such as having a custom display name,
         tracking your match history and personal statistics!
     </p>
 
     const authFirstP = <p>
-        Thank you for signing in { user?.displayName }! Feel free to <b>VIEW </b>
+        Thank you for signing in {  }! Feel free to <b>VIEW </b>
         and personalize your profile and explore all of our features.
         You can also analyze your games and keep track
         in our <b> MATCH HISTORY </b> tab.</p>
@@ -38,7 +39,7 @@ function Home() {
                 { isAuth ? authFirstP : defaultFirstP }
                 { isAuth ? authSecondP : defaultSecondP }
                 <div>
-                    <Button linkTo={ isAuth ? '/multiplayer' : null } click={() => !isAuth ? setIsSigningIn(true) : null } color='primary'>{ isAuth ? 'PLAY NOW' : 'SIGN IN' }</Button>
+                    <Button linkTo={ isAuth ? '/multiplayer' : null } click={() => !isAuth ? setIsChangingName(true) : null } color='primary'>{ isAuth ? 'PLAY NOW' : 'SIGN IN' }</Button>
                     <Button linkTo={ isAuth ? '/profile' : '/multiplayer' } color='highlight'>{ isAuth ? 'PERSONALIZE' : 'PLAY AS A GUEST' }</Button>
                 </div>
             </div>
