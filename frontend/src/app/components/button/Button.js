@@ -9,7 +9,7 @@ function Button({ color, children, click, linkTo }) {
     }
 
     return (linkTo
-        ?<Link to={linkTo} className={ `Button ${color ? color : ''}` }>{ children }</Link>
+        ?<Link to={linkTo} onClick={ ()=> click && click() } className={ `Button ${color ? color : ''}` }>{ children }</Link>
         :<button className={ `Button ${color ? color : ''}` } onClick={ handleClick }>{ children }</button>
     )
 }

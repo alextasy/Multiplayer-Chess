@@ -23,19 +23,24 @@ function SideMenu({ isSideMenuExpanded, close }) {
         else setTimeout(() => { sectionStyle.position = 'absolute'; }, transitionTime);
     }, [isChangingName]);
 
+    function linkPress() {
+        close();
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }
+
     return (
         <div className={ `SideMenu ${isSideMenuExpanded ? 'active' : ''}` }>
-            <img onClick={close} className='close' src={ closeIcon } alt='close-sidebar' />
+            <img onClick={ close } className='close' src={ closeIcon } alt='close-sidebar' />
             <Link className='logo' to='/'><img src={ logo } alt='logo'/></Link>
             <HorizontalLine />
             <section className={ isChangingName ? 'hidden' : ''} ref={ sectionRef }>
                 <h3>GAME MODES</h3>
-                <Button linkTo='/local'>LOCAL PLAY</Button>
-                <Button linkTo='/multiplayer'>ONLINE MULTIPLAYER</Button>
+                <Button click={ linkPress } linkTo='/local'>LOCAL PLAY</Button>
+                <Button click={ linkPress } linkTo='/multiplayer'>ONLINE MULTIPLAYER</Button>
                 <HorizontalLine />
                 <h3 className='no-margin-bottom' >PLAYING AS:</h3>
                 <b>{ userDisplayName }</b>
-                <Button click={() => setIsChangingName(true) } color='primary'>CHANGE NAME</Button>
+                <Button click={ () => setIsChangingName(true) } color='primary'>CHANGE NAME</Button>
             </section>
             { isChangingName ? <ChangeName/> : null }
             <p className='quote'>“Even a poor plan is better than no plan at all.”</p>
