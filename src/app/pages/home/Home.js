@@ -1,12 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import './Home.scss';
 import Board from '../../components/board/Board';
 import Button from '../../components/button/Button';
-import { AppContext } from '../../context/AppContext';
-import HorizontalLine from '../../components/horizontal-line/HorizontalLine';
 
 function Home() {
-    const { setIsChangingName } = useContext(AppContext);
 
     return (
         <div className='HomePage'>
