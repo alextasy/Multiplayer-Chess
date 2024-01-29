@@ -1,6 +1,6 @@
 .Aside {
     width: 470px;
-    height: 100vh;
+    height: calc(100vh - var(--header-height));
     background-color: var(--backgroundDark);
     display: flex;
     align-items: center;

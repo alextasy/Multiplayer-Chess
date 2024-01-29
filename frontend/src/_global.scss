@@ -30,6 +30,10 @@ $available-positions: #0000002d;
     --header-height: 90px;
 }
 
+@media (min-width: 1600px) {
+    :root {  --header-height: 0px; }
+}
+
 // MIXINS:
 
 @mixin flex-center ($direction) {

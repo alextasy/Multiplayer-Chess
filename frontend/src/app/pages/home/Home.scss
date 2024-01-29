@@ -47,7 +47,6 @@
     }
 
     .Board {
-        flex-shrink: 0;
         width: 100%;
         max-width: 455px;
         @media (min-width: 1279px) { max-width: 50%; }
