@@ -1,13 +1,18 @@
 @import '../../../global';
 
 .HomePage{
-    @include flex-center(row);
-    justify-content: space-evenly;
-    height: calc(100vh);
+    width: 100%;
+    min-height: calc(100vh - var(--header-height));
+    padding: 25px;
+    gap: 50px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
     position: relative;
 
     .hero-section{
-        width: 455px;
+        max-width: 455px;
         h1 {
             font-size: 48px;
             margin-bottom: 5px;
@@ -30,29 +35,21 @@
             }
         }
 
-        div {
+        .buttons {
             display: flex;
-
-            .Button:first-child {
-                margin-right: 20px;
-                width: 150px;
-            }
-
-            .Button{
-                height: 42px;
+            gap: 16px;
+            flex-wrap: wrap;
+            .Button {
+                padding: 0 20px;
+                width: fit-content;
             }
         }
     }
 
     .Board {
-        --size: 75px;
-        .row-ranks span, .col-ranks span{
-            font-size: 14px;
-        }
-    }
-
-    .HorizontalLine {
-        position: absolute;
-        bottom: 90px;
+        flex-shrink: 0;
+        width: 100%;
+        max-width: 455px;
+        @media (min-width: 1279px) { max-width: 50%; }
     }
 }

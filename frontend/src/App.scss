@@ -1,11 +1,10 @@
 @import 'global';
 
 .App{
-    --header-height: 88px;
     width: 100%;
     min-height: 100vh;
     background-color: $background;
-    padding-top: 90px;
+    padding-top: var(--header-height);
     @media (min-width: 1600px) {  padding-top: 0;  }
 
     header {
@@ -37,6 +36,8 @@
 
     .container { 
         display: flex;
+        min-height: 100vh;
+        @media (max-width: 1599px) {  min-height: calc(100vh - var(--header-height)); }
         .SideMenu { flex-shrink: 0; }
     }
 

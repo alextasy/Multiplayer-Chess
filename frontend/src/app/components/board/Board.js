@@ -55,9 +55,9 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
 
     useEffect(() => {
         if (!checkGameOver(gameBoard, currentTurn, whiteFigures, blackFigures)) return;
-        const winnerColor = currentTurn === 'black' ? 'white' : 'black'; // We first change the turn then check if there are available moves
-        const winner = (playerIsBlack && winnerColor === 'black') || (!playerIsBlack && winnerColor === 'white') ? 'YOU' : 'OPPONENT';
-        setGameOverModalState({ close: handleGameOver, winner, reason: 'checkmate' });
+        const winnerColor = currentTurn === 'black' ? 'WHITE' : 'BLACK'; // We first change the turn then check if there are available moves
+        const winner = (playerIsBlack && winnerColor === 'BLACK') || (!playerIsBlack && winnerColor === 'WHITE') ? 'YOU' : 'OPPONENT';
+        setGameOverModalState({ close: handleGameOver, winner: isLocal ? winnerColor : winner, reason: 'checkmate' });
     }, [currentTurn]);
 
     function selectFigure(square) {

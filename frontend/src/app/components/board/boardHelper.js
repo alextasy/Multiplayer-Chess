@@ -43,7 +43,7 @@ export const rankElements = (playerIsBlack) => {
     // Ascii table charCode 97 is equal to "a"
     const colRanks = Array.from(Array(8)).map((_, i) => <span style={ {color: color(i) }} key={ i }>{ String.fromCharCode(i + 97) }</span>);
     return {
-        rowRanks: playerIsBlack ? rowRanks.reverse() : rowRanks,
+        rowRanks: playerIsBlack ? rowRanks : rowRanks.reverse(),
         colRanks: playerIsBlack ? colRanks.reverse() : colRanks,
     }
 }

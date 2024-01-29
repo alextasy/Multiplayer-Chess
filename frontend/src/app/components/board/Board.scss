@@ -5,16 +5,15 @@
     user-select: none;
     border-radius: 10px;
     overflow: hidden;
-    --size: 100px;
+    aspect-ratio: 1;
     .wrapper {
-        width: fit-content;
-        height: fit-content;
+        width: 100%;
+        height: 100%;
         display: grid;
         grid-template-columns: repeat(8, 1fr);
 
         .square {
-            width: var(--size);
-            height: var(--size);
+            aspect-ratio: 1;
             position: relative;
             @include flex-center(row);
 
@@ -52,31 +51,32 @@
 
     .row-ranks, .col-ranks {
         position: absolute;
-        display: flex;
+        display: grid;
         pointer-events: none;
         span {
-            width: var(--size);
-            height: var(--size);
-            font-weight: bold;
+            display: flex;
             font-size: 18px;
+            font-weight: bold;
+            @media (max-width: 768px) { font-size: 14px; }
+            @media (max-width: 500px) { font-size: 10px; }
         }
     }
 
     .row-ranks {
+        width: 12.5%;
+        height: 100%;
         top: 0;
-        flex-direction: column-reverse;
-        span {
-            padding-top: 4px;
-            padding-left: 4px;
-        }
+        grid-template-rows: repeat(8, 1fr);
+        span {  padding: 3% 0 0 5%; }
     }
 
     .col-ranks {
+        width: 100%;
+        height: 12.5%;
+        grid-template-columns: repeat(8, 1fr);
         bottom: 0;
         span {
-            padding-bottom: 4px;
-            padding-right: 4px;
-            display: flex;
+            padding: 0 5% 3% 0;
             align-items: flex-end;
             justify-content: flex-end;
         }
