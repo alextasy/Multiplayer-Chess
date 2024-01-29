@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import './Input.scss';
 
-function Input({ children, id, changeState, type = 'text', reference, invalidMsg, placeholder }) {
+function Input({ children, id, changeState, type = 'text', reference, invalidMsg, placeholder, enterPressed }) {
     const ref = useRef();
     useEffect(() =>{
         if (!reference) return;
@@ -19,7 +19,8 @@ function Input({ children, id, changeState, type = 'text', reference, invalidMsg
                 value={ changeState[0] }
                 placeholder={ placeholder }
                 ref={ ref }
-                autoComplete='off'>
+                autoComplete='off'
+                onKeyDown={e => e.key === 'Enter' && enterPressed && enterPressed() }>
             </input>
             <div className='invalid-message'>{ invalidMsg }</div>
         </div>

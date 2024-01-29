@@ -46,11 +46,13 @@ $available-positions: #0000002d;
 @mixin assideItem {
     width: 100%;
     background-color: $background;
-    height: 370px;
+    min-height: fit-content;
+    height: 100%;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    @media (max-width: 1599px) { height: 370px; }
 
     h3 {
         font-size: 14px;

@@ -17,7 +17,6 @@
             transform: translate(-25px, 25px) !important;
             flex-direction: column-reverse;
             height: fit-content !important;
-            .MovesHistory { height: 370px !important; }
         }
     }
 
@@ -36,8 +35,6 @@
         padding: 25px;
         height: calc(100% + 50px);
         transform: translate(25px, -25px);
-
-        .MovesHistory { height: 100%; }
     }
 
     .controls {
@@ -48,6 +45,7 @@
 
         label {
             margin-left: 6px;
+            cursor: pointer;
         }
 
         .Button {

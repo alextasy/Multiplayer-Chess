@@ -2,7 +2,6 @@
 
 .JoinRoom {
     @include assideItem;
-    height: 480px;
     padding: 25px;
 
     h3 {
@@ -22,51 +21,45 @@
         display: flex;
         align-items: center;
         width: 100%;
-        .Input {
-            width: calc(100% - 95px);
-        }
+        gap: 15px;
+        .Input {  min-width: calc(100% - 95px); }
     }
 
     .properties {
         display: flex;
         width: 100%;
         align-items: center;
+        justify-content: space-between;
+        gap: 15px;
         padding-right: 105px;
         padding-left: 10px;
-        img { margin-left: 30px; }
-        h3 + h3 { margin-left: auto; }
     }
 
     .room {
         width: 100%;
         height: 30px;
         margin: 15px 0;
+        gap: 15px;
         display: flex;
         align-items: center;
         font-size: 14px;
         position: relative;
-        overflow: hidden;
+        &:first-child { margin-top: 8px; }
         .info {
-            width: calc(100% - 95px);
+            min-width: calc(100% - 95px);
             height: 30px;
             padding: 0 10px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             background-color: $highlight;
             border-radius: 5px;
-            span:first-child {
+            gap: 15px;
+            span {
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
-                width: calc(100% - 95px);
-            }
-            img { margin-left: 20px; }
-            span + span {
-                width: 48px;
-                margin-right: 3px;
-                margin-left: auto;
-                white-space: nowrap;
-                text-align: center;
+                width: 100%;
             }
         }
 
@@ -103,23 +96,26 @@
                 & input::placeholder {
                     color: $danger;
                 }
+                .invalid-message {
+                    position: absolute;
+                    bottom: -18px;
+                    color: $danger;
+                    font-size: 12px;
+                }
             }
 
             .Button {
                 transition: background 250ms ease-in;
                 background-color: $danger;
+                border-bottom: 2px solid #dc7462;
             }
         }
     }
 
     .Button {
-        width: 80px;
-        min-width: 80px;
-        font-weight: normal;
-        margin-left: 15px;
+        width: 100%;
         height: 30px;
         font-size: 16px;
-        border: none;
     }
 
     .no-rooms {

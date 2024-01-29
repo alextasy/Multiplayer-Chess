@@ -18,8 +18,8 @@ function Local() {
                 <MovesHistory ></MovesHistory>
                 <div className='controls'>
                     <Button color='highlight' click={ () => setPlayingAsBlack(!playingAsBlack) }>Rotate</Button>
-                    <Checkbox click={ ()=> setAutoRotate(!autoRotate) } checkedInitially={ false }></Checkbox>
-                    <label>Auto-rotate</label>
+                    <Checkbox state={ autoRotate } setState={ setAutoRotate }></Checkbox>
+                    <label onClick={ () => setAutoRotate(!autoRotate) }>Auto-rotate</label>
                 </div>
             </Aside>
         </div>

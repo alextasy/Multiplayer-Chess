@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 
 function App() {
   const { isChangingName, setIsChangingName, setUserDisplayName } = useContext(AppContext);
-  const [isSideMenuExpanded, setIsSideMenuExpanded] = useState(true);
+  const [isSideMenuExpanded, setIsSideMenuExpanded] = useState(false);
   const menuCloseTransition = 350;
 
   // Set an initial display name for user
