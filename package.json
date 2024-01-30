@@ -1,6 +1,6 @@
 {
   "name": "multiplayer-chess",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "dependencies": {
     "react": "^18.2.0",
@@ -20,7 +20,8 @@
       "react-app"
     ],
     "rules": {
-      "react-hooks/exhaustive-deps": "off"
+      "react-hooks/exhaustive-deps": "off",
+      "no-mixed-operators": "off"
     }
   },
   "browserslist": {
