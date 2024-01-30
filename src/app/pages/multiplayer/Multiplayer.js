@@ -36,11 +36,13 @@ function Multiplayer() {
     function createRoom(options) {
         socket.emit('createRoom', options);
         if (options.creatorIsBlack) setPlayerIsBlack(true);
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }
 
     function joinRoom(roomId, creatorIsBlack) {
         socket.emit('joinRoom', roomId);
         if (!creatorIsBlack) setPlayerIsBlack(true);
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }
 
     function handleGameOver() {
