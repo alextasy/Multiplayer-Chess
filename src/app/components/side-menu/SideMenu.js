@@ -31,7 +31,7 @@ function SideMenu({ isSideMenuExpanded, close }) {
     return (
         <div className={ `SideMenu ${isSideMenuExpanded ? 'active' : ''}` }>
             <img onClick={ close } className='close' src={ closeIcon } alt='close-sidebar' />
-            <Link className='logo' to='/'><img src={ logo } alt='logo'/></Link>
+            <Link onClick={ close } className='logo' to='/'><img src={ logo } alt='logo'/></Link>
             <HorizontalLine />
             <section className={ isChangingName ? 'hidden' : ''} ref={ sectionRef }>
                 <h3>GAME MODES</h3>

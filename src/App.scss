@@ -60,4 +60,21 @@
             }
         }
     }
+
+    .socket-controls {
+        .Button {
+            width: fit-content;
+            padding: 0 15px;
+            &+.Button {
+                background-color: $danger;
+                border-bottom: 2px solid rgb(203, 85, 72);
+            }
+        }
+        position: fixed;
+        z-index: 5;
+        top: 30px;
+        right: 30px;
+        display: flex;
+        gap: 10px;
+    }
 }

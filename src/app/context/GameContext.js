@@ -11,8 +11,8 @@ export const GameContext = React.createContext({
 
 const GameContextProvider = (props)=>{
     const [moves, setMoves] = useState([]);
-    const [room, setRoom] =useState('');
-    const [game, setGame] =useState(false);
+    const [room, setRoom] = useState('');
+    const [game, setGame] = useState(false);
 
     return(
         <GameContext.Provider value={{

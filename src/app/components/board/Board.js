@@ -21,26 +21,23 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
     const [isLocal] = useState(location.pathname === '/local');
     const { roomId, setMovesHistory } = useContext(GameContext);
     const [receivedMove, setReceivedMove] = useState(null);
+    const [lastMove, setLastMove] = useState({});
 
     useEffect(()=> setMovesHistory([]), []);
 
     useEffect(()=> {
-        socket.on('move', ({ figIndex, nextSquareIndex }) => {
-            const figToMove = gameBoard[figIndex].occupiedBy;
-            const enemyFigures = currentTurn === 'black' ? blackFigures : whiteFigures;
-            setSelectedFigure(figToMove);
-            setAvailableMoves(figToMove.getFigureLegalMoves(gameBoard, enemyFigures));
-            setReceivedMove(gameBoard[nextSquareIndex]);
+        socket.on('move', executeReceivedMove);
+        socket.on('verifyLastMove', ({ figIndex, nextSquareIndex }) => {
+            const moveAlreadyDone = lastMove.figIndex === figIndex && lastMove.nextSquareIndex === nextSquareIndex;
+            if (!figIndex && !nextSquareIndex || moveAlreadyDone) return;
+            executeReceivedMove({ figIndex, nextSquareIndex });
         });
         socket.on('opponentDisconnected', ()=> {
             const winner = 'YOU'; // We win by default
             setGameOverModalState({ close: handleGameOver, winner, reason: 'forfeit' });
         });
-        return () => {
-            // clean up so we don't get duplicate events
-            socket.removeListener('move');
-            socket.removeListener('opponentDisconnected');
-        }
+        // clean up so we don't get duplicate events
+        return () => ['move', 'verifyLastMove', 'opponentDisconnected'].forEach(event => socket.removeListener(event));
     }, []);
 
     useEffect(()=> {
@@ -59,6 +56,14 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
         const winner = (playerIsBlack && winnerColor === 'BLACK') || (!playerIsBlack && winnerColor === 'WHITE') ? 'YOU' : 'OPPONENT';
         setGameOverModalState({ close: handleGameOver, winner: isLocal ? winnerColor : winner, reason: 'checkmate' });
     }, [currentTurn]);
+
+    function executeReceivedMove({ figIndex, nextSquareIndex }) {
+        const figToMove = gameBoard[figIndex].occupiedBy;
+        const enemyFigures = currentTurn === 'black' ? blackFigures : whiteFigures;
+        setSelectedFigure(figToMove);
+        setAvailableMoves(figToMove.getFigureLegalMoves(gameBoard, enemyFigures));
+        setReceivedMove(gameBoard[nextSquareIndex]);
+    }
 
     function selectFigure(square) {
         const isMyTurn = isLocal || (playingAsBlack && currentTurn === 'black') || (!playingAsBlack && currentTurn === 'white');
@@ -132,7 +137,10 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
     function switchTurn(figIndex, nextSquareIndex) {
         setCurrentTurn(currentTurn === 'white' ? 'black' : 'white');
         if (autoRotate) setPlayerIsBlack(!playerIsBlack);
-        if (!isLocal) socket.emit('move', { figIndex, nextSquareIndex, roomId });
+        if (!isLocal) {
+            socket.emit('move', { figIndex, nextSquareIndex, roomId });
+            setLastMove({ figIndex, nextSquareIndex });
+        }
     }
 
     return (
