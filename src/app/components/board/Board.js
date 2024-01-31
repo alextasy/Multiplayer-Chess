@@ -63,6 +63,7 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
     function executeReceivedMove({ figIndex, nextSquareIndex }) {
         const figToMove = gameBoard[figIndex].occupiedBy;
         const enemyFigures = currentTurn === 'black' ? blackFigures : whiteFigures;
+        setLastMove({ figIndex, nextSquareIndex });
         setSelectedFigure(figToMove);
         setAvailableMoves(figToMove.getFigureLegalMoves(gameBoard, enemyFigures));
         setReceivedMove(gameBoard[nextSquareIndex]);
