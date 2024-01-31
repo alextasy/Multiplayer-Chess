@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { initialSetUp, setFigures, rankElements, promotionModal, handleCastling, handlePawnPromotion, checkGameOver, gameOverModal } from './boardHelper';
 import { GameContext } from '../../context/GameContext';
 import { socket } from '../../../helpers/Socket';
+import { AppContext } from '../../context/AppContext';
 
 function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) {
     const [gameBoard, setGameBoard] = useState(initialSetUp());
@@ -19,26 +20,28 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
     const [playerIsBlack, setPlayerIsBlack] = useState(playingAsBlack);
     const location = useLocation();
     const [isLocal] = useState(location.pathname === '/local');
-    const { roomId, setMovesHistory } = useContext(GameContext);
+    const { roomId, setMovesHistory, inGame } = useContext(GameContext);
+    const { userUuid } = useContext(AppContext);
     const [receivedMove, setReceivedMove] = useState(null);
     const [lastMove, setLastMove] = useState({});
 
     useEffect(()=> setMovesHistory([]), []);
 
     useEffect(()=> {
+        if (!inGame) return;
         socket.on('move', executeReceivedMove);
         socket.on('verifyLastMove', ({ figIndex, nextSquareIndex }) => {
             const moveAlreadyDone = lastMove.figIndex === figIndex && lastMove.nextSquareIndex === nextSquareIndex;
             if (!figIndex && !nextSquareIndex || moveAlreadyDone) return;
             executeReceivedMove({ figIndex, nextSquareIndex });
         });
-        socket.on('opponentDisconnected', ()=> {
-            const winner = 'YOU'; // We win by default
+        socket.on('playerDisconnected', disconnectedPlayerId => {
+            const winner = disconnectedPlayerId === userUuid ? 'OPPONENT' : 'YOU';
             setGameOverModalState({ close: handleGameOver, winner, reason: 'forfeit' });
         });
         // clean up so we don't get duplicate events
-        return () => ['move', 'verifyLastMove', 'opponentDisconnected'].forEach(event => socket.removeListener(event));
-    }, []);
+        return () => ['move', 'verifyLastMove', 'playerDisconnected'].forEach(event => socket.removeListener(event));
+    }, [inGame, lastMove]);
 
     useEffect(()=> {
         if (!receivedMove) return;
