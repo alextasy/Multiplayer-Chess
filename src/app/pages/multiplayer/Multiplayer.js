@@ -27,7 +27,10 @@ function Multiplayer() {
             SetKey(new Date().getTime());
             setInGame(true)
         });
-    }, []);
+        socket.on('verifyStillInRoom', roomPlayerWasInId => {
+            if (roomPlayerWasInId === roomId) socket.emit('verifyStillInRoom');
+        });
+    }, [roomId]);
 
     // Clean up
     useEffect(()=> () => inRoom ? socket.emit('leftRoom', roomId) : null, [inRoom]);
