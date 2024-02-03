@@ -118,6 +118,7 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
         setAvailableMoves(null);
         setGameBoard(gameBoardCopy);
 
+        markLastMoveSquares(selectedFigure.lastPosition, square.position);
         if (!receivedMove) switchTurn(selectedFigure.lastPosition - 1, square.position - 1);
     }
 
@@ -148,6 +149,12 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
             socket.emit('move', { move: { figIndex, nextSquareIndex, id: lastMove.id + 1 }, roomId });
             setLastMove({ figIndex, nextSquareIndex, id: lastMove.id + 1 });
         }
+    }
+
+    function markLastMoveSquares(lastPositionSquareId, newPositionSquareId) {
+        document.querySelectorAll('.square').forEach(el => el.classList.remove('last-selected', 'last-move'));
+        document.getElementById(lastPositionSquareId).classList.add('last-selected');
+        document.getElementById(newPositionSquareId).classList.add('last-move');
     }
 
     return (

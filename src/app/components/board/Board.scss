@@ -22,8 +22,12 @@
                 background-color: rgb(226, 117, 98) !important;
             }
 
-            &.selected {
+            &.selected, &.last-selected  {
                 background-color: $selected !important;
+            }
+
+            &.last-move {
+                background-color: var(--last-move) !important;
             }
 
             &.potential-move::after {
