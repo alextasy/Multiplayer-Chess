@@ -23,17 +23,20 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
     const { roomId, setMovesHistory, inGame } = useContext(GameContext);
     const { userUuid } = useContext(AppContext);
     const [receivedMove, setReceivedMove] = useState(null);
-    const [lastMove, setLastMove] = useState({});
+    const [lastMove, setLastMove] = useState({ id: 0 });
 
     useEffect(()=> setMovesHistory([]), []);
 
     useEffect(()=> {
         if (!inGame) return;
         socket.on('move', executeReceivedMove);
-        socket.on('verifyLastMove', ({ figIndex, nextSquareIndex }) => {
-            const moveAlreadyDone = lastMove.figIndex === figIndex && lastMove.nextSquareIndex === nextSquareIndex;
-            if (!figIndex && !nextSquareIndex || moveAlreadyDone) return;
-            executeReceivedMove({ figIndex, nextSquareIndex });
+        socket.on('verifyLastMove', ({ figIndex, nextSquareIndex, id }) => {
+            if (id < lastMove.id) {
+                socket.emit('move', { move: { figIndex, nextSquareIndex, id: lastMove.id + 1 }, roomId });
+                return;
+            }
+            if (lastMove.id === id) return;
+            executeReceivedMove({ figIndex, nextSquareIndex, id });
         });
         socket.on('playerDisconnected', disconnectedPlayerId => {
             const winner = disconnectedPlayerId === userUuid ? 'OPPONENT' : 'YOU';
@@ -60,10 +63,10 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
         setGameOverModalState({ close: handleGameOver, winner: isLocal ? winnerColor : winner, reason: 'checkmate' });
     }, [currentTurn]);
 
-    function executeReceivedMove({ figIndex, nextSquareIndex }) {
+    function executeReceivedMove({ figIndex, nextSquareIndex, id }) {
         const figToMove = gameBoard[figIndex].occupiedBy;
         const enemyFigures = currentTurn === 'black' ? blackFigures : whiteFigures;
-        setLastMove({ figIndex, nextSquareIndex });
+        setLastMove({ figIndex, nextSquareIndex, id });
         setSelectedFigure(figToMove);
         setAvailableMoves(figToMove.getFigureLegalMoves(gameBoard, enemyFigures));
         setReceivedMove(gameBoard[nextSquareIndex]);
@@ -142,8 +145,8 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
         setCurrentTurn(currentTurn === 'white' ? 'black' : 'white');
         if (autoRotate) setPlayerIsBlack(!playerIsBlack);
         if (!isLocal) {
-            socket.emit('move', { figIndex, nextSquareIndex, roomId });
-            setLastMove({ figIndex, nextSquareIndex });
+            socket.emit('move', { move: { figIndex, nextSquareIndex, id: lastMove.id + 1 }, roomId });
+            setLastMove({ figIndex, nextSquareIndex, id: lastMove.id + 1 });
         }
     }
 
