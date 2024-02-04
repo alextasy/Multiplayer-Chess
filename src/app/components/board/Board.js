@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import './Board.scss';
 import { useLocation } from 'react-router-dom';
 import { initialSetUp, setFigures, rankElements, promotionModal, handleCastling, handlePawnPromotion, checkGameOver, gameOverModal } from './boardHelper';
@@ -23,7 +23,8 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
     const { roomId, setMovesHistory, inGame } = useContext(GameContext);
     const { userUuid } = useContext(AppContext);
     const [receivedMove, setReceivedMove] = useState(null);
-    const [lastMove, setLastMove] = useState({ id: 0 });
+    const lastMoveRef = useRef({ id: 0 });
+    const isVerifyingMoveRef = useRef(false);
 
     useEffect(()=> setMovesHistory([]), []);
 
@@ -31,11 +32,12 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
         if (!inGame) return;
         socket.on('move', executeReceivedMove);
         socket.on('verifyLastMove', ({ figIndex, nextSquareIndex, id }) => {
-            if (id < lastMove.id) {
-                socket.emit('move', { move: { figIndex, nextSquareIndex, id: lastMove.id + 1 }, roomId });
+            if (isVerifyingMoveRef.current) return;
+            if (id < lastMoveRef.current.id) {
+                socket.emit('move', { move: { figIndex, nextSquareIndex, id: lastMoveRef.current.id + 1 }, roomId });
                 return;
             }
-            if (lastMove.id === id) return;
+            if (lastMoveRef.current.id === id || !id) return;
             executeReceivedMove({ figIndex, nextSquareIndex, id });
         });
         socket.on('playerDisconnected', disconnectedPlayerId => {
@@ -44,7 +46,7 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
         });
         // clean up so we don't get duplicate events
         return () => ['move', 'verifyLastMove', 'playerDisconnected'].forEach(event => socket.removeListener(event));
-    }, [inGame, lastMove]);
+    }, [inGame]);
 
     useEffect(()=> {
         if (!receivedMove) return;
@@ -64,9 +66,10 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
     }, [currentTurn]);
 
     function executeReceivedMove({ figIndex, nextSquareIndex, id }) {
+        isVerifyingMoveRef.current = true;
         const figToMove = gameBoard[figIndex].occupiedBy;
         const enemyFigures = currentTurn === 'black' ? blackFigures : whiteFigures;
-        setLastMove({ figIndex, nextSquareIndex, id });
+        lastMoveRef.current = { figIndex, nextSquareIndex, id };
         setSelectedFigure(figToMove);
         setAvailableMoves(figToMove.getFigureLegalMoves(gameBoard, enemyFigures));
         setReceivedMove(gameBoard[nextSquareIndex]);
@@ -119,6 +122,7 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
         setGameBoard(gameBoardCopy);
 
         markLastMoveSquares(selectedFigure.lastPosition, square.position);
+        isVerifyingMoveRef.current = false;
         if (!receivedMove) switchTurn(selectedFigure.lastPosition - 1, square.position - 1);
     }
 
@@ -146,8 +150,8 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
         setCurrentTurn(currentTurn === 'white' ? 'black' : 'white');
         if (autoRotate) setPlayerIsBlack(!playerIsBlack);
         if (!isLocal) {
-            socket.emit('move', { move: { figIndex, nextSquareIndex, id: lastMove.id + 1 }, roomId });
-            setLastMove({ figIndex, nextSquareIndex, id: lastMove.id + 1 });
+            socket.emit('move', { move: { figIndex, nextSquareIndex, id: lastMoveRef.current.id + 1 }, roomId });
+            lastMoveRef.current = { figIndex, nextSquareIndex, id: lastMoveRef.current.id + 1 };
         }
     }
 
