@@ -34,7 +34,7 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
         socket.on('verifyLastMove', ({ figIndex, nextSquareIndex, id }) => {
             if (isVerifyingMoveRef.current) return;
             if (id < lastMoveRef.current.id) {
-                socket.emit('move', { move: { figIndex, nextSquareIndex, id: lastMoveRef.current.id + 1 }, roomId });
+                socket.emit('move', { move: lastMoveRef.current, roomId });
                 return;
             }
             if (lastMoveRef.current.id === id || !id) return;
@@ -69,7 +69,6 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
         isVerifyingMoveRef.current = true;
         const figToMove = gameBoard[figIndex].occupiedBy;
         const enemyFigures = currentTurn === 'black' ? blackFigures : whiteFigures;
-        lastMoveRef.current = { figIndex, nextSquareIndex, id };
         setSelectedFigure(figToMove);
         setAvailableMoves(figToMove.getFigureLegalMoves(gameBoard, enemyFigures));
         setReceivedMove(gameBoard[nextSquareIndex]);
@@ -123,6 +122,11 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
 
         markLastMoveSquares(selectedFigure.lastPosition, square.position);
         isVerifyingMoveRef.current = false;
+        lastMoveRef.current = { 
+            figIndex: selectedFigure.lastPosition - 1, 
+            nextSquareIndex: square.position - 1, 
+            id: lastMoveRef.current.id + 1 
+        };
         if (!receivedMove) switchTurn(selectedFigure.lastPosition - 1, square.position - 1);
     }
 
@@ -146,12 +150,11 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
         });
     }
 
-    function switchTurn(figIndex, nextSquareIndex) {
+    function switchTurn() {
         setCurrentTurn(currentTurn === 'white' ? 'black' : 'white');
         if (autoRotate) setPlayerIsBlack(!playerIsBlack);
         if (!isLocal) {
-            socket.emit('move', { move: { figIndex, nextSquareIndex, id: lastMoveRef.current.id + 1 }, roomId });
-            lastMoveRef.current = { figIndex, nextSquareIndex, id: lastMoveRef.current.id + 1 };
+            socket.emit('move', { move: lastMoveRef.current, roomId });
         }
     }
 
