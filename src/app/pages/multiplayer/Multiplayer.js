@@ -18,6 +18,7 @@ function Multiplayer() {
     const { roomId, setRoomId, inGame, setInGame } = useContext(GameContext);
     const [key, SetKey] = useState(new Date().getTime()); // Setting unique key resets the state
     const roomStateRef = useRef({ inGame, roomId }); // Needed for real values when checking in event handlers
+    const [gameStartedAlertState, setGameStartedAlertState] = useState(false);
 
     useEffect(()=> {
         socket.emit('requestRooms');
@@ -56,6 +57,7 @@ function Multiplayer() {
         roomStateRef.current.inGame = true; 
         SetKey(new Date().getTime());
         setInGame(true);
+        setGameStartedAlertState(true);
     }
 
     function handleGameOver() {
@@ -68,8 +70,15 @@ function Multiplayer() {
         roomStateRef.current = { inGame: false, roomId: '' };
     }
 
+    const gameStartedAlert = <div className='game-started-alert'>
+        <h2>GAME STARTED</h2>
+        <p>{ playerIsBlack ? 'Wait for opponent to make a move...' : 'It\'s your turn, make the move' }</p>
+        <p>Good luck! Have fun!</p>
+    </div>
+
     return (
         <div className='Multiplayer'>
+            { gameStartedAlertState ? gameStartedAlert : null }
             <Board key={key} playable={ inGame } playingAsBlack={ playerIsBlack } handleGameOver={ handleGameOver } />
             <Aside>
                 { inRoom ? <Chat initialMsg={ inGame ? null : 'Waiting for opponent to join...' }/> : null }

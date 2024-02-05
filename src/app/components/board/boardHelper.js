@@ -63,7 +63,7 @@ export const promotionModal = ({ close, color }) => (
     </Modal>
 );
 
-export const handlePawnPromotion = (fig, color, setPromoModalState) => {
+export const handlePawnPromotion = (fig, color, setPromoModalState, promotedTo) => {
     return new Promise(resolve => {
         const close = type => {
             fig.type = type;
@@ -71,10 +71,11 @@ export const handlePawnPromotion = (fig, color, setPromoModalState) => {
                 src: imageSources[`${color}_${type}`],
                 alt: `${color} ${type}`
             };
-            resolve();
+            resolve(type);
             setPromoModalState(null);
         }
-        setPromoModalState({ close, color });
+        if (promotedTo) close(promotedTo);
+        else setPromoModalState({ close, color });
     });
 }
 

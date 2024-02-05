@@ -31,14 +31,14 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
     useEffect(()=> {
         if (!inGame) return;
         socket.on('move', executeReceivedMove);
-        socket.on('verifyLastMove', ({ figIndex, nextSquareIndex, id }) => {
+        socket.on('verifyLastMove', ({ figIndex, nextSquareIndex, id, promotedTo }) => {
             if (isVerifyingMoveRef.current) return;
             if (id < lastMoveRef.current.id) {
                 socket.emit('move', { move: lastMoveRef.current, roomId });
                 return;
             }
             if (lastMoveRef.current.id === id || !id) return;
-            executeReceivedMove({ figIndex, nextSquareIndex, id });
+            executeReceivedMove({ figIndex, nextSquareIndex, promotedTo });
         });
         socket.on('playerDisconnected', disconnectedPlayerId => {
             const winner = disconnectedPlayerId === userUuid ? 'OPPONENT' : 'YOU';
@@ -50,7 +50,7 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
 
     useEffect(()=> {
         if (!receivedMove) return;
-        moveFigure(receivedMove);
+        moveFigure(receivedMove.move, receivedMove.promotedTo);
         setCurrentTurn(currentTurn === 'black' ? 'white' : 'black');
         setReceivedMove(null);
     }, [receivedMove]);
@@ -65,13 +65,13 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
         setGameOverModalState({ close: handleGameOver, winner: isLocal ? winnerColor : winner, reason: 'checkmate' });
     }, [currentTurn]);
 
-    function executeReceivedMove({ figIndex, nextSquareIndex, id }) {
+    function executeReceivedMove({ figIndex, nextSquareIndex, promotedTo }) {
         isVerifyingMoveRef.current = true;
         const figToMove = gameBoard[figIndex].occupiedBy;
         const enemyFigures = currentTurn === 'black' ? blackFigures : whiteFigures;
         setSelectedFigure(figToMove);
         setAvailableMoves(figToMove.getFigureLegalMoves(gameBoard, enemyFigures));
-        setReceivedMove(gameBoard[nextSquareIndex]);
+        setReceivedMove({ move: gameBoard[nextSquareIndex], promotedTo });
     }
 
     function selectFigure(square) {
@@ -85,7 +85,7 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
         setAvailableMoves(legalMoves);
     }
 
-    async function moveFigure(square) {
+    async function moveFigure(square, promotedTo = undefined) {
         if (!receivedMove) toggleSelectedStyles(selectedFigure, availableMoves);
 
         if (square.position !== selectedFigure.position && square.occupiedBy?.color === currentTurn) {
@@ -110,7 +110,9 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
         selectedFigure.position = square.position;
         gameBoardCopy[square.position -1].occupiedBy = selectedFigure;
 
-        if (selectedFigure.canPromote()) await handlePawnPromotion(selectedFigure, currentTurn, setPromoModalState);
+        if (selectedFigure.canPromote()) {
+            promotedTo = await handlePawnPromotion(selectedFigure, currentTurn, setPromoModalState, promotedTo);
+        }
 
         const checkedPosition = selectedFigure.seeIfCheck(gameBoardCopy);
         if (checkedPosition !== -1) document.getElementById(checkedPosition).classList.add('checked');
@@ -125,9 +127,10 @@ function Board({ playingAsBlack, playable = true, autoRotate, handleGameOver }) 
         lastMoveRef.current = { 
             figIndex: selectedFigure.lastPosition - 1, 
             nextSquareIndex: square.position - 1, 
-            id: lastMoveRef.current.id + 1 
+            id: lastMoveRef.current.id + 1,
+            promotedTo 
         };
-        if (!receivedMove) switchTurn(selectedFigure.lastPosition - 1, square.position - 1);
+        if (!receivedMove) switchTurn();
     }
 
     function updateMovesHistory(squareName, figureType) {
