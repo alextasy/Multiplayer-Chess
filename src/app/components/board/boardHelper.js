@@ -1,13 +1,18 @@
 import React from 'react';
 import Square from './board-elements/square';
+import Figure from './board-elements/figure';
 import black_bishop from '../../../assets/figure-images/b-bishop.png';
 import black_knight from '../../../assets/figure-images/b-knight.png';
 import black_queen from '../../../assets/figure-images/b-queen.png';
 import black_rook from '../../../assets/figure-images/b-rook.png';
+import black_pawn from '../../../assets/figure-images/b-pawn.png';
+import black_king from '../../../assets/figure-images/b-king.png';
 import white_bishop from '../../../assets/figure-images/w-bishop.png';
 import white_knight from '../../../assets/figure-images/w-knight.png';
 import white_queen from '../../../assets/figure-images/w-queen.png';
 import white_rook from '../../../assets/figure-images/w-rook.png';
+import white_pawn from '../../../assets/figure-images/w-pawn.png';
+import white_king from '../../../assets/figure-images/w-king.png';
 import Modal, { closeModal } from '../modal/Modal';
 import Button from '../button/Button';
 
@@ -48,7 +53,10 @@ export const rankElements = (playerIsBlack) => {
     }
 }
 
-const imageSources = { black_bishop, black_knight, black_queen, black_rook, white_bishop, white_knight, white_queen, white_rook };
+const imageSources = {
+    black_bishop, black_knight, black_queen, black_rook, black_pawn, black_king,
+    white_bishop, white_knight, white_queen, white_rook, white_pawn, white_king
+};
 
 export const promotionModal = ({ close, color }) => (
     <Modal>
@@ -109,3 +117,18 @@ export const gameOverModal = ({ close, winner, reason }) => (
         </div>
     </Modal>
 );
+
+export function reconstructBoardFromState(boardData) {
+    return boardData.map(sq => ({
+        position: sq.position,
+        color: sq.color === 'dark' ? 'var(--primaryDark)' : 'var(--secondary)',
+        name: sq.name,
+        occupiedBy: sq.occupiedBy ? createFigureFromData(sq.occupiedBy) : null
+    }));
+}
+
+function createFigureFromData({ color, type, position, lastPosition }) {
+    const fig = new Figure(color, type, { src: imageSources[`${color}_${type}`], alt: `${color} ${type}` }, position);
+    fig.lastPosition = lastPosition;
+    return fig;
+}

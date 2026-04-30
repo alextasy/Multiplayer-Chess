@@ -9,6 +9,7 @@ import Chat from '../../components/chat/Chat';
 import MovesHistory from '../../components/moves-history/MovesHistory';
 import { GameContext } from '../../context/GameContext';
 import { AppContext } from '../../context/AppContext';
+import { gameOverModal } from '../../components/board/boardHelper';
 
 function Multiplayer() {
     const [rooms, setRooms] = useState([]);
@@ -19,6 +20,7 @@ function Multiplayer() {
     const [key, SetKey] = useState(new Date().getTime()); // Setting unique key resets the state
     const roomStateRef = useRef({ inGame, roomId }); // Needed for real values when checking in event handlers
     const [gameStartedAlertState, setGameStartedAlertState] = useState(false);
+    const [forfeitModal, setForfeitModal] = useState(null);
 
     useEffect(()=> {
         socket.emit('requestRooms');
@@ -33,7 +35,15 @@ function Multiplayer() {
         socket.on('verifyStillInRoom', roomPlayerWasInId => {
             if (roomPlayerWasInId === roomStateRef.current.roomId) socket.emit('verifyStillInRoom');
         });
-        socket.on('verifyGameStarted', startGame);
+        socket.on('verifyGameStarted', () => {
+            startGame();
+            if (roomStateRef.current.roomId) socket.emit('requestBoardState', roomStateRef.current.roomId);
+        });
+        socket.on('playerDisconnected', disconnectedPlayerId => {
+            if (roomStateRef.current.inGame) return; // Board.js handles it while a game is active
+            if (disconnectedPlayerId !== userUuid) return;
+            setForfeitModal({ close: () => setForfeitModal(null), winner: 'OPPONENT', reason: 'forfeit' });
+        });
     }, []);
 
     // Clean up
@@ -79,6 +89,7 @@ function Multiplayer() {
     return (
         <div className='Multiplayer'>
             { gameStartedAlertState ? gameStartedAlert : null }
+            { forfeitModal ? gameOverModal(forfeitModal) : null }
             <Board key={key} playable={ inGame } playingAsBlack={ playerIsBlack } handleGameOver={ handleGameOver } />
             <Aside>
                 { inRoom ? <Chat initialMsg={ inGame ? null : 'Waiting for opponent to join...' }/> : null }
